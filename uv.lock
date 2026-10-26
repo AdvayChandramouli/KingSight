@@ -964,7 +964,7 @@ wheels = [
 ]
 
 [[package]]
-name = "propsight"
+name = "kingsight"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

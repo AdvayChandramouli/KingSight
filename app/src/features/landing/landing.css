@@ -1,0 +1,15 @@
+/*
+ * The landing page's one entrance moment: contour lines draw in once. The
+ * resting state is fully drawn, and the global reduced-motion rule collapses
+ * the duration, so nothing is hidden without animation.
+ */
+@keyframes ks-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+
+.ks-draw {
+  stroke-dasharray: 1;
+  animation: ks-draw 1600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}

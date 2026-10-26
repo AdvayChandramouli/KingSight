@@ -1,0 +1,21 @@
+import { cn } from './cn'
+
+export function Skeleton({ className }: { className?: string }) {
+  return <div aria-hidden className={cn('animate-pulse rounded-md bg-sand/70', className)} />
+}
+
+export function Spinner({ className, label }: { className?: string; label?: string }) {
+  return (
+    <span className="inline-flex items-center gap-2">
+      <svg
+        aria-hidden
+        viewBox="0 0 24 24"
+        className={cn('size-4 animate-spin text-evergreen motion-reduce:animate-none', className)}
+      >
+        <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeOpacity="0.2" strokeWidth="3" />
+        <path d="M21 12a9 9 0 0 0-9-9" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+      </svg>
+      {label && <span>{label}</span>}
+    </span>
+  )
+}

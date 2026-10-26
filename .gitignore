@@ -3,3 +3,7 @@
 .venv
 .ruff_cache
 catboost_info
+
+# Markdown docs stay local; only the repo-root README is versioned.
+*.md
+!README.md

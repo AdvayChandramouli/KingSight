@@ -1,0 +1,171 @@
+@import 'tailwindcss';
+
+/*
+ * KingSight design tokens. Values from SPEC §5, with contrast-checked
+ * derivatives: `clay-ink` replaces clay for small text (clay is 4.41:1 on
+ * canvas), `ink-muted` is ≥4.5:1 on every surface, `control` is ≥3:1 for
+ * input borders.
+ */
+@theme {
+  --color-canvas: #f7f4ee;
+  --color-surface: #fffefa;
+  --color-ink: #203a32;
+  --color-ink-muted: #55665f;
+  --color-evergreen: #31594a;
+  --color-evergreen-strong: #26473b;
+  --color-evergreen-soft: #e3ebe4;
+  --color-mist: #dce7eb;
+  --color-mist-soft: #edf3f5;
+  --color-deep-blue: #38596d;
+  --color-clay: #9a654a;
+  --color-clay-ink: #86533a;
+  --color-clay-soft: #f3e6dc;
+  --color-sand: #e9e1d4;
+  --color-sand-soft: #f1ece3;
+  --color-border: #d8d8ce;
+  --color-control: #7f8a82;
+  --color-danger: #9b3b2e;
+  --color-danger-soft: #f7e4df;
+  --color-warning: #7a5212;
+  --color-warning-soft: #f6ecd6;
+  --color-water: #c9dce3;
+  --color-land: #e6ebdd;
+
+  --font-display: 'Fraunces Variable', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 18px;
+
+  --shadow-soft: 0 1px 2px rgb(32 58 50 / 0.06), 0 4px 14px -6px rgb(32 58 50 / 0.12);
+  --shadow-lift: 0 2px 4px rgb(32 58 50 / 0.06), 0 14px 34px -12px rgb(32 58 50 / 0.22);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --breakpoint-desk: 75rem;
+}
+
+@layer base {
+  html {
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    min-height: 100dvh;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-optical-sizing: auto;
+    text-wrap: balance;
+    letter-spacing: -0.015em;
+    line-height: 1.08;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--color-mist);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-evergreen);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+
+  input,
+  textarea {
+    caret-color: var(--color-evergreen);
+  }
+
+  a {
+    text-underline-offset: 0.2em;
+    text-decoration-thickness: 1px;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border) transparent;
+  }
+
+  /* Hide native number spinners; steppers are explicit controls. */
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type='number'] {
+    -moz-appearance: textfield;
+  }
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+@utility font-display-soft {
+  font-family: var(--font-display);
+  font-variation-settings: 'SOFT' 50, 'WONK' 0;
+}
+
+@keyframes ks-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes ks-slide-in {
+  from {
+    transform: translateX(2.5rem);
+    opacity: 0;
+  }
+}
+@keyframes ks-rise {
+  from {
+    transform: translateY(1.5rem);
+    opacity: 0;
+  }
+}
+@keyframes ks-reveal {
+  from {
+    transform: translateY(0.5rem);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* MapLibre controls restyled to the palette. */
+.maplibregl-ctrl-attrib {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  background: rgb(255 254 250 / 0.85) !important;
+  color: var(--color-ink-muted);
+}
+.maplibregl-ctrl-attrib a {
+  color: var(--color-ink-muted);
+}

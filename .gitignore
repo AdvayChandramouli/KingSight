@@ -1,3 +1,5 @@
 /data
 .cursor
 .venv
+.ruff_cache
+catboost_info

@@ -12,9 +12,11 @@ artifacts/catalog/*.sqlite-shm
 .cursor
 .venv
 .ruff_cache
+.pytest_cache/
 catboost_info
 __pycache__/
 *.py[cod]
 
-# Markdown is local agent context. Do not version it.
+# Markdown is local agent context. Only the repository README is versioned.
 *.md
+!/README.md

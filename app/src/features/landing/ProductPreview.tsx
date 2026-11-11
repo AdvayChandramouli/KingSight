@@ -1,15 +1,17 @@
 import { ArrowRight } from 'lucide-react'
+import { useState } from 'react'
 import { Link } from 'react-router'
 import { HistoricalLabel, ModelTag } from '@/components/brand'
 import { buttonClasses } from '@/components/ui/buttonClasses'
 import { Notice } from '@/components/ui/Notice'
 import { Skeleton } from '@/components/ui/Skeleton'
+import { hasWebGL } from '@/features/explorer/map/webgl'
 import { formatBathrooms, formatSaleDate, formatSqft, formatUsd } from '@/lib/format'
 import { describeError } from '@/services/client'
 import type { ModelInfo, ModelResult, PropertyDetail } from '@/services/types'
 import { IllustrativeTag } from './IllustrativeTag'
 import { PreviewMap } from './PreviewMap'
-import { PREVIEW_HREF, PREVIEW_PROPERTY_ID, resultFor, usePreviewEstimate } from './usePreviewEstimate'
+import { resultFor, usePreviewEstimate } from './usePreviewEstimate'
 
 export function ProductPreview() {
   return (
@@ -33,12 +35,7 @@ export function ProductPreview() {
           <HistoricalLabel />
         </div>
         <div className="grid lg:grid-cols-[minmax(0,1.3fr)_minmax(23rem,1fr)]">
-          <div className="flex flex-col bg-land">
-            <div className="relative aspect-[4/3] lg:aspect-auto lg:min-h-[26rem] lg:flex-1">
-              <PreviewMap />
-            </div>
-            <MapLegend />
-          </div>
+          <PreviewMapColumn />
           <PreviewDetails />
         </div>
       </div>
@@ -46,7 +43,20 @@ export function ProductPreview() {
   )
 }
 
-function MapLegend() {
+function PreviewMapColumn() {
+  const [schematic, setSchematic] = useState(() => !hasWebGL())
+  return (
+    <div className="flex flex-col bg-land">
+      <div className="relative aspect-[4/3] lg:aspect-auto lg:min-h-[26rem] lg:flex-1">
+        <PreviewMap onFallbackChange={setSchematic} />
+      </div>
+      <MapLegend schematic={schematic} />
+    </div>
+  )
+}
+
+function MapLegend({ schematic }: { schematic: boolean }) {
+  const { previewId } = usePreviewEstimate()
   return (
     <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 border-t border-border bg-surface/80 px-4 py-2.5 text-[0.8125rem] text-ink-muted sm:px-5">
       <span className="inline-flex items-center gap-2">
@@ -54,7 +64,7 @@ function MapLegend() {
           <circle cx="8" cy="8" r="5.5" fill="#FFFEFA" stroke="#31594A" strokeWidth="2.5" />
           <circle cx="8" cy="8" r="2" fill="#31594A" />
         </svg>
-        Property {PREVIEW_PROPERTY_ID}
+        Property {previewId ?? '…'}
       </span>
       <span className="inline-flex items-center gap-2">
         <svg aria-hidden viewBox="0 0 20 8" className="h-2 w-5">
@@ -62,13 +72,13 @@ function MapLegend() {
         </svg>
         Graph connections
       </span>
-      <span className="sm:ml-auto">Schematic map, not to scale</span>
+      {schematic && <span className="sm:ml-auto">Schematic map, not to scale</span>}
     </div>
   )
 }
 
 function PreviewDetails() {
-  const { metadata, property, prediction, loading, blocked } = usePreviewEstimate()
+  const { metadata, property, prediction, loading, blocked, previewHref } = usePreviewEstimate()
 
   return (
     <div className="flex flex-col gap-5 border-t border-border p-5 sm:p-6 lg:border-t-0 lg:border-l">
@@ -94,7 +104,7 @@ function PreviewDetails() {
         />
       )}
 
-      <Link to={PREVIEW_HREF} className={buttonClasses('primary', 'lg', 'mt-auto w-full no-underline')}>
+      <Link to={previewHref} className={buttonClasses('primary', 'lg', 'mt-auto w-full no-underline')}>
         Open this property
         <ArrowRight aria-hidden className="size-4" />
       </Link>

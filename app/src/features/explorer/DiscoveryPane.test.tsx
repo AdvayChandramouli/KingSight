@@ -79,6 +79,13 @@ describe('DiscoveryPane', () => {
     const user = userEvent.setup()
     renderPane({ scenarios: ['map-unavailable'] })
     expect(await screen.findByRole('heading', { name: 'Map unavailable' })).toBeInTheDocument()
+    expect(screen.queryByText(/Schematic map/)).not.toBeInTheDocument()
     expect(await openList(user)).toBeInTheDocument()
+  })
+
+  it('uses the labeled schematic map when WebGL is unavailable', async () => {
+    renderPane()
+    expect(await screen.findByText(/Schematic map/)).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: 'Map unavailable' })).not.toBeInTheDocument()
   })
 })

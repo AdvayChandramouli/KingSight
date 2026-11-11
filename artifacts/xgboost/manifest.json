@@ -1,0 +1,47 @@
+{
+  "model_id": "xgboost",
+  "model_version": "1.0.0",
+  "feature_order": [
+    "zipcode",
+    "bedrooms",
+    "bathrooms",
+    "sqft_living",
+    "sqft_lot",
+    "floors",
+    "sqft_above",
+    "sqft_basement",
+    "waterfront",
+    "view",
+    "condition",
+    "grade",
+    "yr_built",
+    "yr_renovated",
+    "lat",
+    "long",
+    "sqft_living15",
+    "sqft_lot15"
+  ],
+  "hyperparameters": {
+    "n_estimators": 500,
+    "learning_rate": 0.05,
+    "max_depth": 6,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "early_stopping_rounds": 50,
+    "random_state": 42,
+    "n_jobs": -1
+  },
+  "best_iteration": 390,
+  "target": "log_price",
+  "target_transform": "exp",
+  "metrics": {
+    "split": "test",
+    "r2_log": 0.917418356391456,
+    "rmse_log": 0.1568515865100031,
+    "mae_log": 0.11312447078727896,
+    "rmse_usd": 123156.37824907388,
+    "mae_usd": 65310.08198427382
+  },
+  "split_seed": 42,
+  "provenance": "scripts/train_tabular.py"
+}

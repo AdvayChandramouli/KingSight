@@ -1,11 +1,17 @@
 export type ClientMode = 'mock' | 'api'
 
+/** OpenFreeMap Positron — OSM data, free, no API key. Never `tile.openstreetmap.org`. */
+export const DEFAULT_MAP_STYLE_URL = 'https://tiles.openfreemap.org/styles/positron'
+
+export const DEFAULT_MAP_ATTRIBUTION = '© OpenStreetMap contributors · OpenFreeMap'
+
 export type AppConfig = {
   dataMode: ClientMode
   apiBaseUrl: string | null
-  /** MapLibre style URL. When absent the offline schematic map is used. */
-  mapStyleUrl: string | null
-  mapAttribution: string | null
+  /** MapLibre style URL. Unset or empty resolves to OpenFreeMap Positron. */
+  mapStyleUrl: string
+  /** Attribution shown in the compact MapLibre control. Unset or empty uses the OSM default. */
+  mapAttribution: string
   /** Developer-only deterministic scenario controls (mock mode only). */
   scenariosEnabled: boolean
   requestTimeoutMs: number
@@ -34,8 +40,8 @@ export function readConfig(env: Env): AppConfig {
   return {
     dataMode,
     apiBaseUrl,
-    mapStyleUrl: clean(env.VITE_MAP_STYLE_URL),
-    mapAttribution: clean(env.VITE_MAP_ATTRIBUTION),
+    mapStyleUrl: clean(env.VITE_MAP_STYLE_URL) ?? DEFAULT_MAP_STYLE_URL,
+    mapAttribution: clean(env.VITE_MAP_ATTRIBUTION) ?? DEFAULT_MAP_ATTRIBUTION,
     scenariosEnabled: dataMode === 'mock' && (env.DEV === true || env.VITE_ENABLE_SCENARIOS === 'true'),
     requestTimeoutMs: Number(env.VITE_REQUEST_TIMEOUT_MS) > 0 ? Number(env.VITE_REQUEST_TIMEOUT_MS) : 15000,
     configError,

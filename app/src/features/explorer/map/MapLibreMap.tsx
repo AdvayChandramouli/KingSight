@@ -1,27 +1,22 @@
 import {
   Map as MapLibre,
   Marker,
-  setWorkerUrl,
   type GeoJSONSource,
   type LayerSpecification,
   type MapLayerMouseEvent,
 } from 'maplibre-gl'
-import 'maplibre-gl/dist/maplibre-gl.css'
-import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url'
 import type { FeatureCollection as GeoFeatureCollection, Geometry } from 'geojson'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { config } from '@/app/config'
 import type { PropertyRecord } from '@/services/types'
 import { MapControls } from './MapControls'
+import { MAP_STYLE_LOAD_TIMEOUT_MS } from './mapEngine'
 import type { MapEngineProps } from './mapTypes'
+import './maplibreSetup'
 import { MarkerTooltip } from './MarkerTooltip'
 import { useElementSize } from './useElementSize'
 
-// The worker is resolved relative to the library file, which breaks once the bundler moves it.
-setWorkerUrl(workerUrl)
-
 const SELECT_ZOOM = 12.5
-const LOAD_TIMEOUT_MS = 15_000
 const COLORS = {
   evergreen: '#31594a',
   surface: '#fffefa',
@@ -273,7 +268,7 @@ export function MapLibreMap(props: MapEngineProps) {
 
   useEffect(() => {
     const container = containerRef.current
-    if (!container || !config.mapStyleUrl) return
+    if (!container) return
     const initial = latest.current
     let map: MapLibre
     try {
@@ -282,7 +277,7 @@ export function MapLibreMap(props: MapEngineProps) {
         style: config.mapStyleUrl,
         bounds: initial.coverage.bounds,
         fitBoundsOptions: { padding: padding(initial) },
-        attributionControl: { compact: true, customAttribution: config.mapAttribution ?? undefined },
+        attributionControl: { compact: true, customAttribution: config.mapAttribution },
         dragRotate: false,
         pitchWithRotate: false,
         maxPitch: 0,
@@ -308,12 +303,12 @@ export function MapLibreMap(props: MapEngineProps) {
       failed = true
       latest.current.onFail(reason)
     }
-    const timer = window.setTimeout(() => !loaded && fail('timeout'), LOAD_TIMEOUT_MS)
+    const timer = window.setTimeout(() => !loaded && fail('timeout'), MAP_STYLE_LOAD_TIMEOUT_MS)
     map.on('error', () => {
       if (!loaded && !map.isStyleLoaded()) fail('style')
     })
     // map.remove() itself releases the context, so only a loss while mounted is a failure.
-    const onContextLost = () => fail('webgl')
+    const onContextLost = () => fail('context-lost')
     const canvas = map.getCanvas()
     canvas.addEventListener('webglcontextlost', onContextLost)
 

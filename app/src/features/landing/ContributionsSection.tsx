@@ -5,7 +5,7 @@ import { Skeleton } from '@/components/ui/Skeleton'
 import { formatSignedLog, formatSignedUsd, formatSqft, formatUsd } from '@/lib/format'
 import type { Explanation, ExplanationFeature } from '@/services/types'
 import { IllustrativeTag } from './IllustrativeTag'
-import { PREVIEW_PROPERTY_ID, usePreviewExplanation } from './usePreviewEstimate'
+import { usePreviewExplanation } from './usePreviewEstimate'
 
 const MAX_ROWS = 5
 
@@ -34,7 +34,7 @@ export function ContributionsSection() {
 }
 
 function ContributionPanel() {
-  const { explanation, model, loading, unavailable } = usePreviewExplanation()
+  const { explanation, model, loading, unavailable, previewId } = usePreviewExplanation()
   const data = explanation.data
 
   let body
@@ -70,7 +70,7 @@ function ContributionPanel() {
     <div className="rounded-[18px] border border-border bg-surface p-5 shadow-soft sm:p-7">
       <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border pb-4">
         <div>
-          <h3 className="text-xl font-medium text-ink">Property {PREVIEW_PROPERTY_ID}</h3>
+          <h3 className="text-xl font-medium text-ink">Property {previewId ?? '…'}</h3>
           {model && <ModelTag model={model} className="mt-1" />}
         </div>
         <IllustrativeTag realLabel="Example explanation" />

@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "catboost>=1.2.10",
+    "fastapi>=0.115",
     "ipykernel>=7.4.0",
     "ipython>=9.17.1",
     "lime>=0.2.0.1",
@@ -14,9 +15,28 @@ dependencies = [
     "numpy>=2.5.4",
     "pandas>=3.1.0",
     "plotly>=7.1.0",
+    "pydantic>=2",
     "ruff>=0.17.2",
     "scikit-learn>=1.9.1",
     "shap>=0.54.1",
+    "torch>=2.2",
     "ty>=0.0.91",
+    "uvicorn>=0.32",
     "xgboost>=3.4.1",
 ]
+
+[dependency-groups]
+dev = [
+    "httpx2",
+    "pytest>=8",
+]
+
+[tool.uv.sources]
+torch = [
+    { index = "pytorch-cpu" },
+]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true

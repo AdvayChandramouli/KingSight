@@ -1,5 +1,6 @@
 import { screen, within } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
+import { MockKingSightClient } from '@/mocks/MockKingSightClient'
 import { LandingPage } from '@/pages/LandingPage'
 import { renderWithApp } from '@/test/render'
 
@@ -27,6 +28,16 @@ describe('LandingPage', () => {
     expect(screen.getByText('Estimated historical value')).toBeInTheDocument()
     expect(await screen.findAllByText(/^\$[\d,]+$/, {}, { timeout: 3000 })).not.toHaveLength(0)
     expect(screen.getByText('Illustrative preview · demo data')).toBeInTheDocument()
+    expect(screen.getByText('Schematic map, not to scale')).toBeInTheDocument()
+    expect(screen.queryByText('OpenStreetMap')).not.toBeInTheDocument()
+  })
+
+  it('does not fetch neighbors for the preview map', async () => {
+    const spy = vi.spyOn(MockKingSightClient.prototype, 'getNeighbors')
+    renderWithApp(<LandingPage />)
+    expect(await screen.findByRole('heading', { name: 'Property KC-1042', level: 3 }, { timeout: 3000 })).toBeInTheDocument()
+    expect(spy).not.toHaveBeenCalled()
+    spy.mockRestore()
   })
 
   it('labels contribution direction with text and signs', async () => {

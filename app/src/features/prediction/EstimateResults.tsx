@@ -30,6 +30,15 @@ export function EstimateResults({ workflow, metadata }: Props) {
         ) : (
           <div className="space-y-4">
             <PrimaryEstimateCard workflow={workflow} view={view} metadata={metadata} stale={stale} />
+            {view.response && view.response.warnings.length > 0 && (
+              <Notice tone="warning" title="Assumptions in this estimate">
+                <ul className="list-disc space-y-1 pl-5">
+                  {view.response.warnings.map((warning) => (
+                    <li key={warning}>{warning}</li>
+                  ))}
+                </ul>
+              </Notice>
+            )}
             <SecondaryModelAlerts view={view} metadata={metadata} stale={stale} />
             {workflow.original && (
               <SensitivityComparison original={workflow.original} updated={view} metadata={metadata} stale={stale} />

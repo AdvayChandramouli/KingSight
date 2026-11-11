@@ -45,10 +45,9 @@ const STATUS_MESSAGES: Record<ApiErrorCode, string> = {
 const RETRYABLE = new Set<ApiErrorCode>(['timeout', 'rate_limited', 'service_unavailable', 'network', 'unknown'])
 
 /**
- * Talks to the KingSight inference API. Endpoint paths follow the provisional
- * proposal in SPEC §12 and still need backend agreement. Never falls back to
- * mock data: every failure surfaces as an `ApiError` (or an AbortError when the
- * caller cancels).
+ * Talks to the KingSight inference API. Endpoint paths are the locked surface
+ * in SPEC §6 (`src/kingsight/api/`). Never falls back to mock data: every
+ * failure surfaces as an `ApiError` (or an AbortError when the caller cancels).
  */
 export class HttpKingSightClient implements KingSightClient {
   readonly mode = 'api'

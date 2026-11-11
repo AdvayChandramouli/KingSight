@@ -4,7 +4,7 @@ import { Skeleton } from '@/components/ui/Skeleton'
 import { formatUsd } from '@/lib/format'
 import type { ModelFamily, ModelResult } from '@/services/types'
 import { IllustrativeTag } from './IllustrativeTag'
-import { modelByFamily, PREVIEW_PROPERTY_ID, resultFor, usePreviewEstimate } from './usePreviewEstimate'
+import { modelByFamily, resultFor, usePreviewEstimate } from './usePreviewEstimate'
 
 const COPY: Record<ModelFamily, { fallback: string; body: string }> = {
   tabular: {
@@ -18,7 +18,7 @@ const COPY: Record<ModelFamily, { fallback: string; body: string }> = {
 }
 
 export function PerspectivesSection() {
-  const { metadata, prediction, loading, blocked } = usePreviewEstimate()
+  const { metadata, prediction, loading, blocked, previewId } = usePreviewEstimate()
   const tabular = modelByFamily(metadata.data, 'tabular')
   const graph = modelByFamily(metadata.data, 'graph')
   const failed = blocked || prediction.isError
@@ -44,6 +44,7 @@ export function PerspectivesSection() {
           result={tabularResult}
           loading={loading}
           failed={failed}
+          previewId={previewId}
         />
         <Perspective
           family="graph"
@@ -51,6 +52,7 @@ export function PerspectivesSection() {
           result={graphResult}
           loading={loading}
           failed={failed}
+          previewId={previewId}
           detail={metadata.data?.graph.available ? `Connections: ${metadata.data.graph.rule_label}` : undefined}
           className="border-t border-border md:border-t-0 md:border-l"
         />
@@ -62,7 +64,7 @@ export function PerspectivesSection() {
           shows how each model reads the same home.{' '}
           <Difference tabular={tabularResult} graph={graphResult} />
         </p>
-        <IllustrativeTag realLabel={`Property ${PREVIEW_PROPERTY_ID}`} className="self-start justify-self-start" />
+        <IllustrativeTag realLabel={`Property ${previewId ?? 'example'}`} className="self-start justify-self-start" />
       </div>
     </section>
   )
@@ -76,9 +78,10 @@ type PerspectiveProps = {
   failed: boolean
   detail?: string
   className?: string
+  previewId: string | null
 }
 
-function Perspective({ family, label, result, loading, failed, detail, className }: PerspectiveProps) {
+function Perspective({ family, label, result, loading, failed, detail, className, previewId }: PerspectiveProps) {
   const style = modelFamilyStyle(family)
   const Icon = style.icon
   const ok = result?.status === 'success' && result.predicted_price_usd != null
@@ -94,7 +97,7 @@ function Perspective({ family, label, result, loading, failed, detail, className
 
       <div className="mt-auto pt-8">
         <div className="border-t border-ink/10 pt-5">
-          <p className="text-[0.8125rem] text-ink-muted">Property {PREVIEW_PROPERTY_ID}</p>
+          <p className="text-[0.8125rem] text-ink-muted">Property {previewId ?? '…'}</p>
           {failed ? (
             <p className="mt-1 text-sm text-ink-muted">Example estimate unavailable right now.</p>
           ) : loading || !result ? (

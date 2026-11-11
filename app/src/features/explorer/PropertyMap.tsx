@@ -1,5 +1,4 @@
 import { lazy, Suspense, useMemo, useState } from 'react'
-import { config } from '@/app/config'
 import { Notice } from '@/components/ui/Notice'
 import { Spinner } from '@/components/ui/Skeleton'
 import { useScenarios } from '@/services/context'
@@ -7,6 +6,7 @@ import { useMetadata } from '@/services/queries'
 import type { Neighbor } from '@/services/types'
 import { useExplorer } from './explorerState'
 import { MapErrorBoundary } from './map/MapErrorBoundary'
+import { asMapEngineFailure, chooseMapEngine, type MapEngineFailure } from './map/mapEngine'
 import type { MapNeighborOverlay, MapViewProps } from './map/mapTypes'
 import { MapUnavailable } from './map/MapUnavailable'
 import { SchematicMap } from './map/SchematicMap'
@@ -14,15 +14,13 @@ import { hasWebGL } from './map/webgl'
 import { useMapRecords, useSelectedRecord, useVisibleNeighborOverlay } from './useDiscoveryResults'
 import { usePrefersReducedMotion } from './useMediaQuery'
 
-// maplibre-gl (and its CSS) only download when a style URL is configured.
+// MapLibre (and its CSS) load for the default OSM style. The chunk stays lazy so the list can render first.
 const MapLibreMap = lazy(() => import('./map/MapLibreMap').then((m) => ({ default: m.MapLibreMap })))
 
-type Engine = 'maplibre' | 'schematic' | 'unavailable'
-
 /**
- * Chooses the map engine: MapLibre when a style URL and WebGL exist, the
- * labeled schematic fallback when no style is configured, and a calm
- * unavailable state when the map cannot render.
+ * Chooses the map engine: MapLibre on the default or overridden OSM style when
+ * WebGL is available, the labeled schematic map when WebGL or the style fails,
+ * and the unavailable notice for the map-unavailable scenario or a lost WebGL context.
  */
 type Props = {
   insetLeft: number
@@ -39,16 +37,14 @@ export function PropertyMap({ insetLeft, insetBottom, onInspectNeighbor }: Props
   const selected = useSelectedRecord(records)
   const { visible } = useVisibleNeighborOverlay()
   const reducedMotion = usePrefersReducedMotion()
-  const [failure, setFailure] = useState<string | null>(null)
-  const [webgl] = useState(() => (config.mapStyleUrl ? hasWebGL() : false))
+  const [failure, setFailure] = useState<MapEngineFailure | null>(null)
+  const [webgl] = useState(hasWebGL)
 
-  const engine: Engine = active.has('map-unavailable')
-    ? 'unavailable'
-    : !config.mapStyleUrl
-      ? 'schematic'
-      : failure || !webgl
-        ? 'unavailable'
-        : 'maplibre'
+  const engine = chooseMapEngine({
+    scenarioUnavailable: active.has('map-unavailable'),
+    webgl,
+    failure,
+  })
 
   const overlay = useMemo<MapNeighborOverlay | null>(
     () => (visible ? { origin: visible.origin, neighbors: visible.context.neighbors } : null),
@@ -56,10 +52,11 @@ export function PropertyMap({ insetLeft, insetBottom, onInspectNeighbor }: Props
   )
 
   if (engine === 'unavailable') {
+    const contextGone = failure === 'webgl' || failure === 'context-lost'
     return (
       <MapUnavailable
         insetLeft={insetLeft}
-        detail={!webgl && config.mapStyleUrl && !active.has('map-unavailable') ? 'This browser can’t display the interactive map.' : undefined}
+        detail={contextGone && !active.has('map-unavailable') ? 'This browser can’t display the interactive map.' : undefined}
       />
     )
   }
@@ -105,7 +102,7 @@ export function PropertyMap({ insetLeft, insetBottom, onInspectNeighbor }: Props
   return (
     <MapErrorBoundary fallback={unavailable}>
         {engine === 'schematic' ? (
-          <SchematicMap {...props} onFail={setFailure} />
+          <SchematicMap {...props} onFail={(reason) => setFailure(asMapEngineFailure(reason))} />
         ) : (
           <Suspense
             fallback={
@@ -114,7 +111,7 @@ export function PropertyMap({ insetLeft, insetBottom, onInspectNeighbor }: Props
               </div>
             }
           >
-            <MapLibreMap {...props} onFail={setFailure} />
+            <MapLibreMap {...props} onFail={(reason) => setFailure(asMapEngineFailure(reason))} />
           </Suspense>
         )}
     </MapErrorBoundary>

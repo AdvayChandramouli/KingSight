@@ -6,7 +6,7 @@ import { CountyModel } from './Model'
 import { CAMERA_FRAME } from './project'
 import type { ReliefStageProps } from './ReliefStage'
 
-type Tip = { id: string; zip: string; x: number; y: number }
+type Tip = { id: string; zip: string; x: number; y: number; source: 'sale' | 'neighbor' }
 
 type ReliefCanvasProps = ReliefStageProps & {
   visible: boolean
@@ -99,7 +99,7 @@ export function ReliefCanvas({
   const [orbiting, setOrbiting] = useState(false)
   const [drawing, setDrawing] = useState(false)
   const [tip, setTip] = useState<Tip | null>(null)
-  const shownTip = showConnections ? tip : null
+  const shownTip = tip && (tip.source === 'sale' || showConnections) ? tip : null
   const frameloop = !visible ? 'never' : orbiting || drawing ? 'always' : 'demand'
 
   return (
@@ -116,7 +116,7 @@ export function ReliefCanvas({
         }}
         gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
         onCreated={({ gl, camera }) => {
-          gl.setClearColor('#1a2320', 1)
+          gl.setClearColor('#1a1f24', 1)
           gl.toneMapping = THREE.NoToneMapping
           camera.lookAt(CAMERA_FRAME.target[0], CAMERA_FRAME.target[1], CAMERA_FRAME.target[2])
         }}

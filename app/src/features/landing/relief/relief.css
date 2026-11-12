@@ -3,14 +3,14 @@
   width: 100%;
   height: 100%;
   min-height: 20rem;
-  background: #1a2320;
-  color: #1c211f;
+  background: var(--color-fir, #1a1f24);
+  color: var(--color-surface, #f3f4f6);
   font-family: inherit;
 }
 
 .relief-stage ::selection {
-  background: #d7c4a2;
-  color: #1c211f;
+  background: color-mix(in srgb, var(--color-brass, #745218) 28%, var(--color-surface, #f3f4f6));
+  color: var(--color-ink, #14161a);
 }
 
 .relief-stage__view {
@@ -29,7 +29,7 @@
 .relief-stage__pending {
   width: 100%;
   height: 100%;
-  background: #1a2320;
+  background: var(--color-fir, #1a1f24);
 }
 
 .relief-stage__caption {
@@ -39,8 +39,9 @@
   left: 0;
   margin: 0;
   padding: 0.55rem 0.85rem 0.65rem;
-  background: #f3efe6;
-  color: #1c211f;
+  background: var(--color-surface, #f3f4f6);
+  color: var(--color-ink, #14161a);
+  font-family: var(--font-sans, sans-serif);
   font-size: 0.8125rem;
   line-height: 1.35;
   letter-spacing: 0.01em;
@@ -52,16 +53,17 @@
   margin: 0;
   max-width: 16rem;
   padding: 0.35rem 0.5rem;
-  background: #f3efe6;
-  color: #1c211f;
-  font-family: inherit;
+  background: var(--color-surface, #f3f4f6);
+  color: var(--color-ink, #14161a);
+  font-family: var(--font-sans, sans-serif);
   font-size: 0.8125rem;
   line-height: 1.35;
   letter-spacing: 0.01em;
-  box-shadow: 0 10px 22px rgba(22, 18, 12, 0.28);
+  box-shadow: 0 10px 28px -16px rgb(26 31 36 / 0.45);
   pointer-events: none;
 }
 
 .relief-tip__id {
+  font-family: var(--font-mono, ui-monospace, monospace);
   font-variant-numeric: tabular-nums;
 }

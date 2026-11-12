@@ -19,17 +19,42 @@ import {
 import { LAND_BOTTOM, LAND_THICKNESS, LAND_TOP, WATER_Y, projectToModel } from './project'
 import type { ReliefNeighbor } from './ReliefStage'
 
-const WOOD = '#e0d2bc'
-const WOOD_MARK = '#b7a48a'
-const WATER = '#2a3c48'
-const TABLE = '#24302c'
-const STONE = '#b7b2a8'
-const BRASS = '#a8844a'
-const NAIL = '#3f3c38'
-const THREAD = '#6e4c38'
+/**
+ * Hex copies of the design tokens. Three.js cannot read CSS variables.
+ * Source: `--color-*` in app/src/styles/index.css.
+ */
+const BASSWOOD = '#d7d1c6'
+const SAND = '#e4ddd2'
+const WATER = '#3a4d5c'
+const FIR = '#1a1f24'
+const INK = '#14161a'
+const INK_MUTED = '#3e4450'
+const MIST = '#d5e0e7'
+const SAND_SOFT = '#efeae3'
+const PLASTER = '#d5d8de'
+const BRASS = '#745218'
+const CEDAR = '#8d5a3a'
 const Y_AXIS = new THREE.Vector3(0, 1, 0)
 
-type HoverTip = { id: string; zip: string; x: number; y: number } | null
+type HoverTip = { id: string; zip: string; x: number; y: number; source: 'sale' | 'neighbor' } | null
+
+function pinEvents(id: string, zip: string, source: 'sale' | 'neighbor', onHover: (tip: HoverTip) => void) {
+  const show = (event: ThreeEvent<PointerEvent>) => {
+    event.stopPropagation()
+    onHover({ id, zip, x: event.nativeEvent.clientX, y: event.nativeEvent.clientY, source })
+  }
+  const hold = (event: ThreeEvent<PointerEvent>) => {
+    event.stopPropagation()
+    event.nativeEvent.preventDefault()
+  }
+  return {
+    onPointerOver: show,
+    onPointerMove: show,
+    onPointerOut: () => onHover(null),
+    onPointerDown: hold,
+    onClick: hold,
+  }
+}
 
 type ModelProps = {
   propertyId: string
@@ -172,7 +197,7 @@ function boardMetrics() {
 }
 
 function MarkMaterial() {
-  return <meshStandardMaterial color={WOOD_MARK} roughness={0.88} flatShading />
+  return <meshStandardMaterial color={INK_MUTED} roughness={0.88} flatShading />
 }
 
 function LandmarkMesh({ landmark }: { landmark: Landmark }) {
@@ -248,28 +273,38 @@ function Sun({ cx, cz }: { cx: number; cz: number }) {
     sun.shadow.bias = -0.0004
     sun.shadow.normalBias = 0.03
     sun.shadow.mapSize.set(1024, 1024)
+    return () => {
+      sun.shadow.dispose()
+    }
   }, [])
   return (
     <>
-      <directionalLight ref={light} position={[1.45, 2.25, 0.95]} intensity={2.35} color="#fff1e2" castShadow />
+      <directionalLight ref={light} position={[1.45, 2.25, 0.95]} intensity={2.35} color={SAND_SOFT} castShadow />
       <object3D ref={target} position={[cx, 0, cz]} />
     </>
   )
 }
 
-function SalePin({ propertyId, zip, latitude, longitude }: Pick<ModelProps, 'propertyId' | 'zip' | 'latitude' | 'longitude'>) {
+function SalePin({
+  propertyId,
+  zip,
+  latitude,
+  longitude,
+  onHover,
+}: Pick<ModelProps, 'propertyId' | 'zip' | 'latitude' | 'longitude' | 'onHover'>) {
   const point = projectToModel(latitude, longitude)
+  const events = pinEvents(propertyId, zip, 'sale', onHover)
   return (
     <group name={`sale-${propertyId}-${zip}`} position={[point.x, LAND_TOP, point.z]}>
-      <mesh position={[0, 0.0015, 0]} castShadow>
+      <mesh position={[0, 0.0015, 0]} castShadow {...events}>
         <boxGeometry args={[0.032, 0.003, 0.032]} />
-        <meshStandardMaterial color={BRASS} metalness={0.72} roughness={0.34} />
+        <meshStandardMaterial color={BASSWOOD} roughness={0.92} />
       </mesh>
-      <mesh position={[0, 0.034, 0]} castShadow>
+      <mesh position={[0, 0.034, 0]} castShadow {...events}>
         <cylinderGeometry args={[0.0034, 0.0034, 0.068, 10]} />
         <meshStandardMaterial color={BRASS} metalness={0.72} roughness={0.34} />
       </mesh>
-      <mesh position={[0, 0.074, 0]} castShadow>
+      <mesh position={[0, 0.074, 0]} castShadow {...events}>
         <boxGeometry args={[0.02, 0.016, 0.02]} />
         <meshStandardMaterial color={BRASS} metalness={0.72} roughness={0.34} />
       </mesh>
@@ -340,42 +375,18 @@ function NeighborLink({
     pinGroup.position.set(end.x, LAND_TOP + amount * 0.012, end.z)
   })
 
-  const hover = (event: ThreeEvent<PointerEvent>) => {
-    event.stopPropagation()
-    onHover({ id: neighbor.id, zip: neighbor.zip, x: event.nativeEvent.clientX, y: event.nativeEvent.clientY })
-  }
-  const hold = (event: ThreeEvent<PointerEvent>) => {
-    event.stopPropagation()
-    event.nativeEvent.preventDefault()
-  }
+  const events = pinEvents(neighbor.id, neighbor.zip, 'neighbor', onHover)
 
   return (
     <group>
-      <mesh
-        ref={thread}
-        visible={false}
-        castShadow
-        onPointerOver={hover}
-        onPointerMove={hover}
-        onPointerOut={() => onHover(null)}
-        onPointerDown={hold}
-        onClick={hold}
-      >
+      <mesh ref={thread} visible={false} castShadow {...events}>
         <boxGeometry args={[0.012, 1, 0.0035]} />
-        <meshStandardMaterial color={THREAD} roughness={0.72} />
+        <meshStandardMaterial color={CEDAR} roughness={0.72} />
       </mesh>
       <group ref={pin} visible={false}>
-        <mesh
-          position={[0, 0.008, 0]}
-          castShadow
-          onPointerOver={hover}
-          onPointerMove={hover}
-          onPointerOut={() => onHover(null)}
-          onPointerDown={hold}
-          onClick={hold}
-        >
+        <mesh position={[0, 0.008, 0]} castShadow {...events}>
           <sphereGeometry args={[0.008, 14, 10]} />
-          <meshStandardMaterial color={NAIL} metalness={0.22} roughness={0.58} flatShading />
+          <meshStandardMaterial color={INK} metalness={0.2} roughness={0.5} />
         </mesh>
       </group>
     </group>
@@ -424,16 +435,28 @@ export function CountyModel({
     }
   }, [showConnections, neighborKey, onDraw])
 
+  useEffect(() => {
+    return () => {
+      land.dispose()
+      vashon.dispose()
+      mercer.dispose()
+      sound.dispose()
+      lakeWashington.dispose()
+      lakeSammamish.dispose()
+      ridge.dispose()
+    }
+  }, [land, vashon, mercer, sound, lakeWashington, lakeSammamish, ridge])
+
   const rainier = projectToModel(RAINIER.latitude, RAINIER.longitude)
 
   return (
     <>
-      <ambientLight intensity={0.16} color="#e4ebe6" />
+      <ambientLight intensity={0.18} color="#e6e8eb" />
       <Sun cx={board.cx} cz={board.cz} />
-      <directionalLight position={[-0.2, 1.15, -1.45]} intensity={0.48} color="#d5e2ee" />
+      <directionalLight position={[-0.2, 1.4, -1.55]} intensity={0.72} color={MIST} />
       <mesh position={[board.cx, -0.028, board.cz]} receiveShadow>
         <boxGeometry args={[board.width, 0.056, board.depth]} />
-        <meshStandardMaterial color={TABLE} roughness={0.96} />
+        <meshStandardMaterial color={FIR} roughness={0.96} />
       </mesh>
       <mesh geometry={sound} receiveShadow>
         <meshStandardMaterial color={WATER} roughness={0.62} metalness={0.04} side={THREE.DoubleSide} />
@@ -445,31 +468,31 @@ export function CountyModel({
         <meshStandardMaterial color={WATER} roughness={0.62} metalness={0.04} side={THREE.DoubleSide} />
       </mesh>
       <mesh geometry={land} castShadow receiveShadow>
-        <meshStandardMaterial color={WOOD} roughness={0.92} />
+        <meshStandardMaterial color={BASSWOOD} roughness={0.92} />
       </mesh>
       <mesh geometry={vashon} castShadow receiveShadow>
-        <meshStandardMaterial color={WOOD} roughness={0.92} />
+        <meshStandardMaterial color={BASSWOOD} roughness={0.92} />
       </mesh>
       <mesh geometry={mercer} castShadow receiveShadow>
-        <meshStandardMaterial color={WOOD} roughness={0.92} />
+        <meshStandardMaterial color={BASSWOOD} roughness={0.92} />
       </mesh>
       <mesh geometry={ridge} castShadow receiveShadow>
-        <meshStandardMaterial color="#d3c4ae" roughness={0.9} flatShading />
+        <meshStandardMaterial color={SAND} roughness={0.9} flatShading />
       </mesh>
       <group position={[rainier.x, 0, rainier.z]}>
         <mesh position={[0, 0.03, 0]} castShadow raycast={ignoreRaycast}>
           <coneGeometry args={[0.15, 0.06, 7]} />
-          <meshStandardMaterial color={STONE} roughness={0.92} flatShading />
+          <meshStandardMaterial color={INK_MUTED} roughness={0.92} flatShading />
         </mesh>
         <mesh position={[0.012, 0.095, -0.008]} castShadow raycast={ignoreRaycast}>
           <coneGeometry args={[0.085, 0.15, 6]} />
-          <meshStandardMaterial color="#aea89e" roughness={0.9} flatShading />
+          <meshStandardMaterial color={PLASTER} roughness={0.9} flatShading />
         </mesh>
       </group>
       {LANDMARKS.map((landmark) => (
         <LandmarkMesh key={landmark.id} landmark={landmark} />
       ))}
-      <SalePin propertyId={propertyId} zip={zip} latitude={latitude} longitude={longitude} />
+      <SalePin propertyId={propertyId} zip={zip} latitude={latitude} longitude={longitude} onHover={onHover} />
       {links.map((neighbor, index) => (
         <NeighborLink
           key={`${neighbor.id}:${index}`}

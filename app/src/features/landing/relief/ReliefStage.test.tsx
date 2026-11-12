@@ -67,6 +67,24 @@ describe('ReliefStage fallback', () => {
     spy.mockRestore()
   })
 
+  it('returns null when WebGL cannot be created without loading the scene', async () => {
+    sceneLoads.mockClear()
+    installMedia(() => false)
+    const create = document.createElement.bind(document)
+    const spy = vi.spyOn(document, 'createElement').mockImplementation((tag: string, options?: ElementCreationOptions) => {
+      const element = create(tag, options)
+      if (String(tag).toLowerCase() === 'canvas') {
+        element.getContext = () => null
+      }
+      return element
+    })
+    const { container } = await renderStage()
+    expect(container).toBeEmptyDOMElement()
+    expect(sceneLoads).not.toHaveBeenCalled()
+    expect(container.querySelector('canvas')).toBeNull()
+    spy.mockRestore()
+  })
+
   it('returns null for a narrow matchMedia query without loading the scene', async () => {
     sceneLoads.mockClear()
     installMedia((query) => query.includes('max-width'))

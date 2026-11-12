@@ -37,7 +37,7 @@ export function ExplorerPage() {
 function ContextStrip() {
   const mode = useDataMode()
   return (
-    <div className="border-b border-border bg-sand-soft">
+    <div className="border-b border-border bg-canvas">
       <div className="flex min-h-10 flex-wrap items-center gap-x-4 gap-y-1 px-4 py-2 sm:px-6">
         <HistoricalLabel />
         {mode === 'mock' && (

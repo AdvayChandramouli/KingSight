@@ -8,7 +8,7 @@ import type { EstimateWorkflow } from './useEstimateWorkflow'
 import { ATTRIBUTE_ORDER } from './attributeSchema'
 
 export const inputClasses =
-  'tabular h-11 w-full rounded-md border border-control/70 bg-surface px-3 text-base text-ink transition-colors duration-150 placeholder:text-ink-muted/80 hover:border-ink-muted focus-visible:border-evergreen focus-visible:outline-2 focus-visible:outline-offset-1 aria-invalid:border-danger aria-invalid:bg-danger-soft/40'
+  'tabular h-11 w-full rounded-sm border border-control/70 bg-surface px-3 text-base text-ink transition-colors duration-150 ease-[cubic-bezier(0.16,1,0.3,1)] placeholder:text-ink-muted/80 hover:border-ink focus-visible:border-brass focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brass aria-invalid:border-danger aria-invalid:bg-danger-soft/40'
 
 const UNIT_SUFFIX: Partial<Record<AttributeKey, string>> = { sqft_living: 'sq ft' }
 
@@ -174,10 +174,10 @@ function WaterfrontField({
           <label
             key={option.text}
             className={cn(
-              'relative inline-flex min-h-11 min-w-24 cursor-pointer items-center justify-center gap-2 rounded-full border px-5 text-[0.95rem] font-medium transition-colors duration-150 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-evergreen',
+              'relative inline-flex min-h-11 min-w-24 cursor-pointer items-center justify-center gap-2 rounded-sm border px-5 text-[0.95rem] font-medium transition-colors duration-150 ease-[cubic-bezier(0.16,1,0.3,1)] has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-brass',
               values.waterfront === option.value
-                ? 'border-evergreen bg-evergreen-soft text-ink'
-                : 'border-control/60 bg-surface text-ink-muted hover:border-ink-muted hover:text-ink',
+                ? 'border-brass bg-canvas text-ink ring-1 ring-brass'
+                : 'border-control/60 bg-surface text-ink-muted hover:border-ink hover:text-ink',
             )}
           >
             <input
@@ -190,8 +190,8 @@ function WaterfrontField({
             <span
               aria-hidden
               className={cn(
-                'size-3.5 rounded-full border-2',
-                values.waterfront === option.value ? 'border-evergreen bg-evergreen ring-2 ring-surface ring-inset' : 'border-control',
+                'size-3.5 border',
+                values.waterfront === option.value ? 'border-ink bg-brass ring-1 ring-ink' : 'border-ink bg-surface',
               )}
             />
             {option.text}

@@ -26,8 +26,8 @@ export function EstimateAction({ workflow, firstLabel = 'Estimate this property'
     <div className={failedCurrent ? undefined : 'space-y-2'}>
       {failedCurrent ? null : upToDate ? (
         <p className="flex min-h-11 items-center gap-2 text-sm text-ink-muted">
-          <CheckCircle2 aria-hidden className="size-4 text-evergreen" />
-          The results below match these details.
+          <CheckCircle2 aria-hidden className="size-4 text-ink" />
+          The estimates above match these details.
         </p>
       ) : (
         <Button

@@ -123,24 +123,61 @@ function MapToggle({ checked, onChange }: { checked: boolean; onChange: (next: b
       role="switch"
       aria-checked={checked}
       onClick={() => onChange(!checked)}
-      className="-mr-2 inline-flex min-h-11 items-center gap-2.5 rounded-full px-2 text-sm font-medium text-ink hover:bg-sand-soft"
+      className="-mr-2 inline-flex min-h-11 items-center gap-2.5 rounded-sm px-2 text-sm font-medium text-ink transition-colors duration-150 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-canvas"
     >
       <span
         aria-hidden
         className={cn(
-          'relative inline-flex h-6 w-10 shrink-0 rounded-full border transition-colors duration-150',
-          checked ? 'border-evergreen bg-evergreen' : 'border-control bg-sand-soft',
+          'relative inline-flex h-6 w-10 shrink-0 rounded-sm border transition-colors duration-150 ease-[cubic-bezier(0.16,1,0.3,1)]',
+          checked ? 'border-brass bg-ink ring-1 ring-brass' : 'border-ink bg-canvas',
         )}
       >
         <span
           className={cn(
-            'absolute top-0.5 size-4.5 rounded-full bg-surface shadow-soft transition-transform duration-150 ease-out',
+            'absolute top-0.5 size-4.5 bg-surface transition-transform duration-150 ease-[cubic-bezier(0.16,1,0.3,1)]',
             checked ? 'translate-x-[1.125rem]' : 'translate-x-0.5',
           )}
         />
       </span>
       Show connections on map
     </button>
+  )
+}
+
+/** Inline thread diagram of connected ids. The list below remains the accessible record. */
+function NeighborThreads({ ids }: { ids: string[] }) {
+  const shown = ids.slice(0, 6)
+  const extra = ids.length - shown.length
+  if (shown.length === 0) return null
+  const row = 18
+  const height = shown.length * row + 8
+  const originY = height / 2
+  return (
+    <figure className="border border-border bg-canvas px-3 py-2 text-ink">
+      <svg viewBox={`0 0 280 ${height}`} className="h-auto w-full max-w-sm text-ink" aria-hidden>
+        {shown.map((id, i) => {
+          const y = 8 + i * row + 4
+          return (
+            <g key={id}>
+              <line x1="22" y1={originY} x2="72" y2={y} className="text-clay" stroke="currentColor" strokeWidth="1" />
+              <text x="80" y={y + 4} className="fill-current font-mono text-[11px]">
+                {id}
+              </text>
+            </g>
+          )
+        })}
+        <polygon
+          points={`16,${originY - 6} 22,${originY} 16,${originY + 6} 10,${originY}`}
+          className="text-brass"
+          fill="currentColor"
+        />
+      </svg>
+      {extra > 0 && (
+        <p className="mt-1 text-[0.8125rem] text-ink-muted">
+          {extra} more connected {extra === 1 ? 'home' : 'homes'} in the list
+        </p>
+      )}
+    </figure>
   )
 }
 
@@ -152,7 +189,7 @@ function NeighborList({ context }: { context: NeighborContext }) {
 
   if (count === 0) {
     return (
-      <p className="rounded-md bg-sand-soft px-4 py-3 text-sm text-ink-muted">
+      <p className="border border-border bg-canvas px-4 py-3 text-sm text-ink-muted">
         This home has few close connections in the graph, so there is limited neighborhood context.
       </p>
     )
@@ -174,7 +211,8 @@ function NeighborList({ context }: { context: NeighborContext }) {
           <dd className="text-ink">{context.rule_label}</dd>
         </div>
       </dl>
-      <ul id={listId} className="space-y-2">
+      <NeighborThreads ids={context.neighbors.map((n) => n.property.id)} />
+      <ul id={listId} className="divide-y divide-border border-y border-border">
         {shown.map((n) => (
           <NeighborItem
             key={n.property.id}
@@ -203,8 +241,8 @@ function RoleBadge({ explorable }: { explorable: boolean }) {
   return (
     <span
       className={cn(
-        'shrink-0 rounded-full px-2 py-0.5 text-[0.8125rem] font-medium',
-        explorable ? 'bg-evergreen-soft text-evergreen' : 'border border-border bg-sand-soft text-ink-muted',
+        'shrink-0 rounded-sm border px-1.5 py-0.5 text-[0.8125rem] font-medium',
+        explorable ? 'border-ink text-ink' : 'border-border text-ink-muted',
       )}
     >
       {explorable ? 'Explorable example' : 'Reference-only'}
@@ -228,8 +266,8 @@ function NeighborItem({
   return (
     <li
       className={cn(
-        'rounded-lg border bg-surface transition-[border-color,box-shadow] duration-150',
-        expanded ? 'border-evergreen shadow-soft' : 'border-border',
+        'bg-surface transition-colors duration-150 ease-[cubic-bezier(0.16,1,0.3,1)]',
+        expanded && 'ring-1 ring-brass ring-inset',
       )}
     >
       <button
@@ -237,11 +275,14 @@ function NeighborItem({
         aria-expanded={expanded}
         aria-controls={detailId}
         onClick={() => onToggle(!expanded)}
-        className="flex min-h-11 w-full items-start gap-3 rounded-lg px-4 py-3 text-left hover:bg-sand-soft/60"
+        className="flex min-h-11 w-full items-start gap-3 px-4 py-3 text-left hover:bg-canvas"
       >
         <span className="min-w-0 flex-1">
           <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
-            <span className="font-semibold text-ink">Property {p.id}</span>
+            <span className="font-medium text-ink">
+              {expanded && <span aria-hidden className="mr-1.5 inline-block size-2 rotate-45 bg-brass ring-1 ring-ink align-middle" />}
+              Property <span className="font-mono">{p.id}</span>
+            </span>
             <RoleBadge explorable={explorable} />
           </span>
           <span className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-sm text-ink-muted tabular">
@@ -267,7 +308,7 @@ function NeighborDetail({ id, neighbor }: { id: string; neighbor: Neighbor }) {
   const explorable = p.role === 'held_out_example'
 
   return (
-    <div id={id} className="border-t border-border px-4 pt-3 pb-4 animate-[ks-reveal_160ms_var(--ease-out-expo)]">
+    <div id={id} className="border-t border-border px-4 pt-3 pb-4">
       <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
         <Fact label="Connection" value={EDGE_LABEL[neighbor.edge_type]} />
         <Fact label="ZIP code" value={p.zipcode ?? 'Not recorded'} />
@@ -278,7 +319,7 @@ function NeighborDetail({ id, neighbor }: { id: string; neighbor: Neighbor }) {
         <Fact label="Waterfront" value={a.waterfront ? 'Yes' : 'No'} />
       </dl>
       {p.actual_price_usd != null && (
-        <p className="mt-3 rounded-md bg-sand-soft px-3 py-2 text-sm text-ink-muted">
+        <p className="mt-3 border border-border bg-canvas px-3 py-2 text-sm text-ink-muted">
           Recorded sale <span className="font-semibold text-ink tabular">{formatUsd(p.actual_price_usd)}</span>
           {p.sale_date ? ` (${formatSaleDate(p.sale_date)})` : ''} — historical observation, not a model input.
         </p>
@@ -325,7 +366,7 @@ function NeighborSkeleton() {
     <div className="space-y-2" aria-busy="true">
       <p className="text-sm text-ink-muted">Loading connected homes…</p>
       {[0, 1, 2].map((i) => (
-        <div key={i} className="rounded-lg border border-border p-4">
+        <div key={i} className="border border-border p-4">
           <Skeleton className="h-4 w-1/2" />
           <Skeleton className="mt-2 h-3.5 w-3/4" />
         </div>

@@ -3,6 +3,7 @@ import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/components/ui/cn'
 import { useExplorer, type LngLat, type RememberedSession } from '@/features/explorer/explorerState'
+import { EstimateResults } from '@/features/prediction/EstimateResults'
 import { pointInPolygon } from '@/lib/geo'
 import { useProperty } from '@/services/queries'
 import type { Metadata } from '@/services/types'
@@ -80,6 +81,8 @@ function HypotheticalWorkspace({
         <p className="text-[0.95rem] text-ink-muted">A hypothetical home you describe — it is not a dataset record.</p>
       </header>
 
+      <EstimateResults workflow={workflow} metadata={metadata} />
+
       <form
         noValidate
         aria-label="Hypothetical property details"
@@ -153,12 +156,14 @@ function LocationFields({
       <legend className="font-display text-xl text-ink">Location</legend>
       <div id={`${id}-help`} className="space-y-1 text-sm text-ink-muted">
         <p className="flex items-center gap-1.5">
-          <MapPinned aria-hidden className="size-4 shrink-0 text-evergreen" />
+          <MapPinned aria-hidden className="size-4 shrink-0 text-ink" />
           Click the map to place it, or enter coordinates.
         </p>
         <p>Supported area: {metadata.coverage.label}.</p>
         {startedFromId && atStart && (
-          <p className="font-medium text-ink">Starting from the location of {startedFromId} — edit as needed.</p>
+          <p className="font-medium text-ink">
+            Starting from the location of <span className="font-mono">{startedFromId}</span> — edit as needed.
+          </p>
         )}
         {!hasPoint && !engaged && (
           <p className="font-medium text-ink">Choose a location to begin.</p>

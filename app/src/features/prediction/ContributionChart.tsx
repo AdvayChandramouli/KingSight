@@ -7,10 +7,10 @@ import { formatContribution, formatFeatureValue } from './modelDisplay'
 
 const VISIBLE = 6
 
-type Props = { features: ExplanationFeature[]; space: ExplanationOutputSpace }
+type Props = { features: ExplanationFeature[]; space: ExplanationOutputSpace; tone?: 'tabular' | 'graph' }
 
 /** Signed local contributions diverging from a center axis, largest first. */
-export function ContributionChart({ features, space }: Props) {
+export function ContributionChart({ features, space, tone = 'tabular' }: Props) {
   const [showAll, setShowAll] = useState(false)
   const listId = useId()
   const sorted = [...features].sort((a, b) => Math.abs(b.contribution) - Math.abs(a.contribution))
@@ -23,6 +23,8 @@ export function ContributionChart({ features, space }: Props) {
         {shown.map((f) => {
           const direction = f.contribution > 0 ? 'raised' : f.contribution < 0 ? 'lowered' : 'no effect'
           const half = (Math.abs(f.contribution) / max) * 50
+          const raised = tone === 'graph' ? 'bg-clay' : 'bg-deep-blue'
+          const lowered = tone === 'graph' ? 'border border-clay' : 'border border-deep-blue'
           return (
             <li key={f.key}>
               <div className="flex items-baseline justify-between gap-3 text-sm">
@@ -35,12 +37,9 @@ export function ContributionChart({ features, space }: Props) {
                   <span className="text-ink-muted">{direction}</span>
                 </span>
               </div>
-              <div aria-hidden className="relative mt-1.5 h-2.5 rounded-full bg-sand-soft">
+              <div aria-hidden className="relative mt-1.5 h-2 bg-canvas">
                 <div
-                  className={cn(
-                    'absolute inset-y-0',
-                    f.contribution >= 0 ? 'left-1/2 rounded-r-full bg-evergreen' : 'right-1/2 rounded-l-full bg-warning/80',
-                  )}
+                  className={cn('absolute inset-y-0', f.contribution >= 0 ? cn('left-1/2', raised) : cn('right-1/2', lowered))}
                   style={{ width: `${Math.max(half, f.contribution === 0 ? 0 : 0.75)}%` }}
                 />
                 <div className="absolute -inset-y-1 left-1/2 w-px -translate-x-1/2 bg-control" />

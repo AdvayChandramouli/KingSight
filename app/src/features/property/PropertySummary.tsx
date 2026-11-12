@@ -11,7 +11,7 @@ export function PropertyHeader({ property, onClose }: { property: PropertyDetail
     <header className="flex items-start justify-between gap-4">
       <div className="min-w-0 space-y-1">
         <h2 className="font-display text-[2rem] leading-tight font-semibold text-ink sm:text-[2.25rem]">
-          Property {property.id}
+          Property <span className="font-mono text-[0.72em] font-medium tracking-normal">{property.id}</span>
         </h2>
         <p className="text-[0.95rem] text-ink-muted">
           {property.zipcode ? `ZIP ${property.zipcode}` : 'ZIP unavailable'}
@@ -22,7 +22,7 @@ export function PropertyHeader({ property, onClose }: { property: PropertyDetail
         type="button"
         aria-label="Close property details"
         onClick={onClose}
-        className="-mr-2 inline-flex size-11 shrink-0 items-center justify-center rounded-full text-ink-muted transition-colors duration-150 hover:bg-sand-soft hover:text-ink"
+        className="-mr-2 inline-flex size-11 shrink-0 items-center justify-center rounded-sm text-ink-muted transition-colors duration-150 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-canvas hover:text-ink"
       >
         <X aria-hidden className="size-5" />
       </button>
@@ -38,7 +38,7 @@ export function RecordedSale({ property, asOriginal }: { property: PropertyDetai
   const perSqft = price != null && Number.isFinite(sqft) && sqft > 0 ? price / sqft : null
 
   return (
-    <section aria-labelledby={headingId} className="rounded-lg bg-sand-soft px-5 py-4">
+    <section aria-labelledby={headingId} className="border-y border-border py-4">
       <h3 id={headingId} className="font-sans text-sm font-semibold tracking-normal text-ink">
         {asOriginal ? 'Original property · recorded historical sale' : 'Recorded historical sale'}
       </h3>
@@ -46,7 +46,7 @@ export function RecordedSale({ property, asOriginal }: { property: PropertyDetai
         <dl className="tabular mt-2 flex flex-wrap items-end gap-x-8 gap-y-2">
           <div>
             <dt className="text-[0.8125rem] text-ink-muted">Recorded sale price</dt>
-            <dd className="text-xl font-semibold text-ink">{formatUsd(price)}</dd>
+            <dd className="text-3xl font-medium text-ink tabular">{formatUsd(price)}</dd>
           </div>
           <div>
             <dt className="text-[0.8125rem] text-ink-muted">Sale date</dt>
@@ -106,7 +106,7 @@ function SummaryItem({ attrKey, values, metadata }: { attrKey: AttributeKey; val
 
 export function LockedLocation({ property }: { property: PropertyDetail }) {
   return (
-    <div className="rounded-lg bg-sand-soft px-4 py-3 text-sm">
+    <div className="border border-border bg-canvas px-4 py-3 text-sm">
       <p className="font-medium text-ink">Location</p>
       <p className="tabular text-ink">
         {formatCoordinate(property.latitude)}, {formatCoordinate(property.longitude)}

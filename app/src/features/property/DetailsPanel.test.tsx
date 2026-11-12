@@ -49,7 +49,7 @@ describe('DetailsPanel · existing property', () => {
     await screen.findByRole('heading', { name: 'Property KC-1042' })
     await estimate(user)
     expect(screen.getByText(RECORDED_ERROR)).toBeInTheDocument()
-    expect(screen.getByText('The results below match these details.')).toBeInTheDocument()
+    expect(screen.getByText('The estimates above match these details.')).toBeInTheDocument()
   })
 
   it('shows inline errors for invalid input and keeps submit aria-disabled', async () => {
@@ -185,7 +185,9 @@ describe('DetailsPanel · hypothetical property', () => {
   it('starts from the previous selection’s labeled location and never shows a recorded price', async () => {
     const { user } = renderPanel({ path: '/explore?property=KC-1042&mode=create' })
     expect(await screen.findByRole('heading', { name: 'Create a property' })).toBeInTheDocument()
-    expect(screen.getByText('Starting from the location of KC-1042 — edit as needed.')).toBeInTheDocument()
+    expect(screen.getByText(/edit as needed/)).toHaveTextContent(
+      'Starting from the location of KC-1042 — edit as needed.',
+    )
     expect(field('Latitude')).toHaveValue(47.6838)
     expect(screen.getByText(/Illustrative starting values/)).toBeInTheDocument()
 

@@ -2,6 +2,7 @@ import { PencilLine, RotateCcw } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { Button } from '@/components/ui/Button'
 import { useExplorer } from '@/features/explorer/explorerState'
+import { EstimateResults } from '@/features/prediction/EstimateResults'
 import type { Metadata, PropertyDetail } from '@/services/types'
 import { AttributeFields } from './AttributeFields'
 import { EstimateAction } from './EstimateAction'
@@ -42,6 +43,8 @@ export function PropertyWorkspace({ property, metadata }: Props) {
         />
         <RecordedSale property={property} asOriginal={isEditedContext} />
       </div>
+
+      <EstimateResults workflow={workflow} metadata={metadata} />
 
       <form
         noValidate

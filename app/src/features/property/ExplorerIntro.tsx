@@ -31,16 +31,10 @@ export function ExplorerIntro() {
         </p>
       </div>
 
-      <ol className="space-y-2.5">
-        {STEPS.map((step, i) => (
-          <li key={step} className="flex gap-3 text-[0.95rem] text-ink">
-            <span
-              aria-hidden
-              className="tabular flex size-7 shrink-0 items-center justify-center rounded-full bg-evergreen-soft text-sm font-semibold text-evergreen"
-            >
-              {i + 1}
-            </span>
-            <span className="pt-0.5">{step}</span>
+      <ol className="list-decimal space-y-2.5 pl-5 text-[0.95rem] text-ink marker:font-medium">
+        {STEPS.map((step) => (
+          <li key={step} className="pl-1">
+            {step}
           </li>
         ))}
       </ol>
@@ -89,7 +83,7 @@ function ExampleProperties() {
       ) : items.length === 0 ? (
         <p className="text-sm text-ink-muted">No example properties are available right now.</p>
       ) : (
-        <ul className="divide-y divide-border overflow-hidden rounded-lg border border-border">
+        <ul className="divide-y divide-border border-y border-border">
           {items.map((p) => (
             <ExampleRow key={p.id} property={p} />
           ))}
@@ -109,11 +103,11 @@ function ExampleRow({ property }: { property: PropertyRecord }) {
           selectProperty(property.id)
           setMobileView('details')
         }}
-        className="flex min-h-14 w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors duration-150 hover:bg-sand-soft focus-visible:-outline-offset-2"
+        className="flex min-h-14 w-full items-center justify-between gap-3 px-1 py-3 text-left transition-colors duration-150 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-canvas focus-visible:-outline-offset-2"
       >
         <span className="min-w-0">
           <span className="block font-semibold text-ink">
-            {property.id}
+            <span className="font-mono">{property.id}</span>
             <span className="font-normal text-ink-muted"> · {property.zipcode ? `ZIP ${property.zipcode}` : 'ZIP unavailable'}</span>
           </span>
           <span className="tabular block text-[0.8125rem] text-ink-muted">

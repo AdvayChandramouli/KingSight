@@ -49,7 +49,7 @@ export function ModelComparison({ view, metadata, stale }: Props) {
           ))}
         </ul>
         {differences.length > 0 && (
-          <dl className="space-y-1 rounded-md bg-sand-soft px-4 py-3 text-sm">
+          <dl className="space-y-1 border border-border bg-canvas px-4 py-3 text-sm">
             {differences.map((d) => (
               <div key={d.modelId} className="flex flex-wrap items-baseline justify-between gap-x-3">
                 <dt className="text-ink-muted">
@@ -82,14 +82,19 @@ function ModelOutcomeCard({
     <article
       aria-label={modelName(metadata, outcome.modelId)}
       className={cn(
-        'flex h-full flex-col rounded-lg border bg-surface p-4',
+        'flex h-full flex-col rounded-sm border bg-surface p-4',
         outcome.state === 'success' || outcome.state === 'pending' ? 'border-border' : 'border-danger/30',
       )}
     >
+      <span
+        aria-hidden
+        className={cn('mb-3 block h-px', model?.family === 'graph' ? 'bg-clay' : 'bg-deep-blue')}
+      />
       <div className="flex flex-wrap items-center justify-between gap-2">
         {model ? <ModelTag model={model} /> : <span className="text-sm font-semibold text-ink">{outcome.modelId}</span>}
         {isPrimary && (
-          <span className="rounded-full bg-evergreen-soft px-2 py-0.5 text-[0.8125rem] font-medium text-evergreen">
+          <span className="inline-flex items-center gap-1.5 text-[0.8125rem] font-medium text-ink">
+            <span aria-hidden className="size-2 rotate-45 bg-brass ring-1 ring-ink" />
             Primary
           </span>
         )}
@@ -100,7 +105,7 @@ function ModelOutcomeCard({
       </p>
       <div className="mt-3 flex-1">
         {outcome.state === 'success' && outcome.result ? (
-          <p className="font-display text-[1.75rem] leading-tight text-ink tabular">
+          <p className="text-[1.75rem] leading-tight text-ink tabular">
             {formatUsd(outcome.result.predicted_price_usd)}
           </p>
         ) : outcome.state === 'pending' ? (
@@ -155,7 +160,7 @@ export function SecondaryModelAlerts({ view, metadata, stale }: Props) {
           <li key={o.modelId}>
             <article
               aria-label={`${modelName(metadata, o.modelId)} estimate unavailable`}
-              className="rounded-lg border border-danger/30 bg-danger-soft/60 px-4 py-3"
+              className="rounded-sm border border-danger/30 bg-danger-soft/60 px-4 py-3"
             >
               <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                 {model ? <ModelTag model={model} /> : <span className="text-sm font-semibold text-ink">{o.modelId}</span>}
@@ -175,7 +180,7 @@ export function SecondaryModelAlerts({ view, metadata, stale }: Props) {
         )
       })}
       {pending.map((o) => (
-        <li key={o.modelId} className="rounded-lg border border-border px-4 py-3 text-sm text-ink-muted">
+        <li key={o.modelId} className="rounded-sm border border-border px-4 py-3 text-sm text-ink-muted">
           <Spinner label={`Estimating with the ${modelName(metadata, o.modelId)}…`} />
         </li>
       ))}

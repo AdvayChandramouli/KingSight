@@ -47,7 +47,7 @@ function ExistingProperty({ id, metadata }: { id: string; metadata: Metadata }) 
       return (
         <PanelMessage title="Property not found" onBrowse={browse}>
           <p>
-            There’s no example property with the ID <strong className="text-ink">{id}</strong>. It may have been
+            There’s no example property with the ID <strong className="font-mono text-ink">{id}</strong>. It may have been
             mistyped, or it isn’t part of this dataset.
           </p>
         </PanelMessage>

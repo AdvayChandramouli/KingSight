@@ -63,7 +63,7 @@ export function PropertyMap({ insetLeft, insetBottom, onInspectNeighbor }: Props
 
   if (metadata.isError) {
     return (
-      <div className="absolute inset-0 flex items-center justify-center bg-sand-soft p-6" style={{ paddingLeft: insetLeft + 24 }}>
+      <div className="absolute inset-0 flex items-center justify-center bg-land p-6" style={{ paddingLeft: insetLeft + 24 }}>
         <Notice tone="error" title="The map couldn’t load its coverage area" onRetry={() => void metadata.refetch()} className="max-w-sm bg-surface">
           The property list still works while the map is unavailable.
         </Notice>
@@ -73,7 +73,7 @@ export function PropertyMap({ insetLeft, insetBottom, onInspectNeighbor }: Props
 
   if (!metadata.data) {
     return (
-      <div className="absolute inset-0 flex items-center justify-center bg-sand-soft">
+      <div className="absolute inset-0 flex items-center justify-center bg-land">
         <Spinner label="Loading map…" className="text-ink-muted" />
       </div>
     )
@@ -106,7 +106,7 @@ export function PropertyMap({ insetLeft, insetBottom, onInspectNeighbor }: Props
         ) : (
           <Suspense
             fallback={
-              <div className="absolute inset-0 flex items-center justify-center bg-sand-soft">
+              <div className="absolute inset-0 flex items-center justify-center bg-land">
                 <Spinner label="Loading map…" className="text-ink-muted" />
               </div>
             }

@@ -26,7 +26,7 @@ export function SensitivityComparison({ original, updated, metadata, stale }: Pr
   )
 
   return (
-    <section aria-labelledby="sensitivity-heading" className="rounded-xl border border-border bg-surface p-5">
+    <section aria-labelledby="sensitivity-heading" className="border border-border bg-surface p-5">
       <h3 id="sensitivity-heading" className="font-display text-lg text-ink">
         Sensitivity exploration
       </h3>
@@ -39,7 +39,7 @@ export function SensitivityComparison({ original, updated, metadata, stale }: Pr
             {changed.map((key) => (
               <li
                 key={key}
-                className="inline-flex flex-wrap items-center gap-1.5 rounded-full bg-sand-soft px-3 py-1 text-[0.8125rem] text-ink"
+                className="inline-flex flex-wrap items-center gap-1.5 rounded-sm border border-border bg-canvas px-3 py-1 text-[0.8125rem] text-ink"
               >
                 <span className="font-medium">{fieldLabel(metadata, key)}</span>
                 <span className="text-ink-muted tabular">

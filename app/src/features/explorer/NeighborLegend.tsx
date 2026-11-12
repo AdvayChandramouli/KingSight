@@ -13,31 +13,25 @@ type Props = {
 
 function TargetKey({ creating }: { creating: boolean }) {
   return (
-    <svg aria-hidden viewBox="0 0 20 20" className="size-5 shrink-0">
-      {creating ? (
-        <path d="M10 18 C9 15 4 12 4 8 a6 6 0 0 1 12 0 c0 4 -5 7 -6 10Z" fill="#203a32" />
-      ) : (
-        <>
-          <circle cx="10" cy="10" r="9" fill="#31594a" fillOpacity="0.16" />
-          <circle cx="10" cy="10" r="5.5" fill="#fffefa" stroke="#31594a" strokeWidth="2.5" />
-        </>
-      )}
+    <svg aria-hidden viewBox="0 0 20 20" className={cn('size-5 shrink-0', creating ? 'text-ink' : 'text-brass')}>
+      <path d="M10 18 C9.2 15.2 5 12.5 5 8.5 a5 5 0 0 1 10 0 c0 4 -4.2 6.7 -5 9.5Z" fill="currentColor" />
+      <rect x="8" y="5.5" width="4" height="4" fill="var(--color-surface)" />
     </svg>
   )
 }
 
 function NeighborKey() {
   return (
-    <svg aria-hidden viewBox="0 0 20 20" className="size-5 shrink-0">
-      <rect x="4" y="4" width="12" height="12" rx="3" fill="#9a654a" stroke="#fffefa" strokeWidth="1.5" />
+    <svg aria-hidden viewBox="0 0 20 20" className="size-5 shrink-0 text-clay">
+      <rect x="4" y="4" width="12" height="12" fill="currentColor" stroke="var(--color-surface)" strokeWidth="1.5" />
     </svg>
   )
 }
 
 function EdgeKey({ dashed = false }: { dashed?: boolean }) {
   return (
-    <svg aria-hidden viewBox="0 0 20 20" className="size-5 shrink-0">
-      <line x1="1" y1="10" x2="19" y2="10" stroke="#9a654a" strokeWidth="2" strokeDasharray={dashed ? '4 3' : undefined} />
+    <svg aria-hidden viewBox="0 0 20 20" className="size-5 shrink-0 text-clay">
+      <line x1="1" y1="10" x2="19" y2="10" stroke="currentColor" strokeWidth="2" strokeDasharray={dashed ? '4 3' : undefined} />
     </svg>
   )
 }
@@ -70,7 +64,7 @@ export function NeighborLegend({ context, className, compact = false }: Props) {
     <section
       aria-label="Graph connections legend"
       className={cn(
-        'w-full rounded-xl border border-border bg-surface/97 shadow-soft',
+        'w-full rounded-sm border border-border bg-surface',
         compact ? 'px-3.5 py-2' : 'max-w-[19rem] p-3.5',
         className,
       )}
@@ -89,11 +83,11 @@ export function NeighborLegend({ context, className, compact = false }: Props) {
           />
           <span
             aria-hidden
-            className="h-6 w-10 rounded-full border border-control/70 bg-sand transition-colors duration-150 peer-checked:border-evergreen peer-checked:bg-evergreen peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-evergreen"
+            className="h-6 w-10 rounded-sm border border-ink bg-canvas transition-colors duration-150 ease-[cubic-bezier(0.16,1,0.3,1)] peer-checked:border-brass peer-checked:bg-ink peer-checked:ring-1 peer-checked:ring-brass peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brass"
           />
           <span
             aria-hidden
-            className="pointer-events-none absolute top-1 left-1 size-4 rounded-full bg-surface shadow-soft transition-transform duration-150 peer-checked:translate-x-4"
+            className="pointer-events-none absolute top-1 left-1 size-4 bg-surface transition-transform duration-150 ease-[cubic-bezier(0.16,1,0.3,1)] peer-checked:translate-x-4"
           />
         </span>
       </label>
@@ -120,7 +114,7 @@ export function NeighborLegend({ context, className, compact = false }: Props) {
                 aria-expanded={ruleOpen}
                 aria-controls={ruleId}
                 onClick={() => setRuleOpen((o) => !o)}
-                className="-ml-1 inline-flex min-h-11 items-center gap-1 rounded-md px-1 text-[0.8125rem] font-medium text-evergreen"
+                className="-ml-1 inline-flex min-h-11 items-center gap-1 rounded-sm px-1 text-[0.8125rem] font-medium text-ink underline decoration-brass underline-offset-4"
               >
                 How homes are connected
                 <ChevronDown aria-hidden className={cn('size-4 transition-transform duration-150', ruleOpen && 'rotate-180')} />

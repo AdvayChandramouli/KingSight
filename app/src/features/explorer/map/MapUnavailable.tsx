@@ -12,9 +12,9 @@ export function MapUnavailable({ detail, insetLeft = 0 }: { detail?: string; ins
   }, [setMapUnavailable])
 
   return (
-    <div className="absolute inset-0 flex items-center justify-center bg-sand-soft p-6" style={{ paddingLeft: insetLeft + 24 }}>
-      <output className="block max-w-sm rounded-xl border border-border bg-surface px-6 py-6 text-center shadow-soft">
-        <span className="mx-auto mb-3 inline-flex size-11 items-center justify-center rounded-full bg-sand text-ink-muted">
+    <div className="absolute inset-0 flex items-center justify-center bg-land p-6" style={{ paddingLeft: insetLeft + 24 }}>
+      <output className="block max-w-sm rounded-sm border border-border bg-surface px-6 py-6 text-center">
+        <span className="mx-auto mb-3 inline-flex size-11 items-center justify-center border border-border bg-canvas text-ink-muted">
           <MapPinOff aria-hidden className="size-5" />
         </span>
         <h2 className="font-display text-xl text-ink">Map unavailable</h2>

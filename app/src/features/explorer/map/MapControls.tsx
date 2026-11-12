@@ -11,7 +11,7 @@ type Props = {
 }
 
 const iconButton =
-  'inline-flex size-11 items-center justify-center text-ink transition-colors duration-150 hover:bg-evergreen-soft disabled:cursor-not-allowed disabled:text-ink-muted/50 disabled:hover:bg-transparent'
+  'inline-flex size-11 items-center justify-center text-ink transition-colors duration-150 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-canvas disabled:cursor-not-allowed disabled:text-ink-muted/50 disabled:hover:bg-transparent'
 
 export function MapControls({ onZoomIn, onZoomOut, onReset, canZoomIn = true, canZoomOut = true, className }: Props) {
   return (
@@ -19,12 +19,12 @@ export function MapControls({ onZoomIn, onZoomOut, onReset, canZoomIn = true, ca
       <button
         type="button"
         onClick={onReset}
-        className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-surface px-4 text-sm font-medium text-ink shadow-soft transition-colors duration-150 hover:border-evergreen hover:bg-evergreen-soft"
+        className="inline-flex min-h-11 items-center gap-2 rounded-sm border border-border bg-surface px-4 text-sm font-medium text-ink transition-colors duration-150 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-ink hover:bg-canvas"
       >
-        <RotateCcw aria-hidden className="size-4 text-evergreen" />
+        <RotateCcw aria-hidden className="size-4 text-ink" />
         Reset map
       </button>
-      <fieldset className="flex flex-col overflow-hidden rounded-full border border-border bg-surface shadow-soft">
+      <fieldset className="flex flex-col overflow-hidden rounded-sm border border-border bg-surface">
         <legend className="sr-only">Zoom</legend>
         <button type="button" aria-label="Zoom in" onClick={onZoomIn} disabled={!canZoomIn} className={iconButton}>
           <Plus aria-hidden className="size-4.5" />

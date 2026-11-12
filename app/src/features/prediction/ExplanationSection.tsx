@@ -95,19 +95,27 @@ function ExplanationBody({ view, stale, metadata }: { view: PredictionView; stal
         ) : query.data.features.length === 0 ? (
           <Unavailable />
         ) : (
-          <ExplanationDetail explanation={query.data} outcome={active.outcome} />
+          <ExplanationDetail explanation={query.data} outcome={active.outcome} tone={active.model.family === 'graph' ? 'graph' : 'tabular'} />
         )}
       </StaleFrame>
     </section>
   )
 }
 
-function ExplanationDetail({ explanation, outcome }: { explanation: Explanation; outcome: ModelOutcome }) {
+function ExplanationDetail({
+  explanation,
+  outcome,
+  tone,
+}: {
+  explanation: Explanation
+  outcome: ModelOutcome
+  tone: 'tabular' | 'graph'
+}) {
   const usd = explanation.output_space === 'usd'
   const versionMismatch = outcome.result && outcome.result.version !== explanation.model_version
 
   return (
-    <div className="space-y-4 rounded-xl border border-border bg-surface p-5">
+    <div className="space-y-4 border border-border bg-surface p-5">
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 text-sm">
         <p className="font-semibold text-ink">
           {usd ? 'Contributions in US dollars' : 'Contributions in log-price units — not dollars'}
@@ -135,7 +143,7 @@ function ExplanationDetail({ explanation, outcome }: { explanation: Explanation;
           {outcome.result?.version}.
         </Notice>
       )}
-      <ContributionChart features={explanation.features} space={explanation.output_space} />
+      <ContributionChart features={explanation.features} space={explanation.output_space} tone={tone} />
       <p className="flex gap-2 text-[0.8125rem] text-ink-muted">
         <Info aria-hidden className="mt-0.5 size-3.5 shrink-0" />
         <span>
@@ -144,13 +152,19 @@ function ExplanationDetail({ explanation, outcome }: { explanation: Explanation;
         </span>
       </p>
       {explanation.global_importance && explanation.global_importance.length > 0 && (
-        <GlobalImportance items={explanation.global_importance} />
+        <GlobalImportance items={explanation.global_importance} tone={tone} />
       )}
     </div>
   )
 }
 
-function GlobalImportance({ items }: { items: NonNullable<Explanation['global_importance']> }) {
+function GlobalImportance({
+  items,
+  tone,
+}: {
+  items: NonNullable<Explanation['global_importance']>
+  tone: 'tabular' | 'graph'
+}) {
   const sorted = [...items].sort((a, b) => b.importance - a.importance)
   const max = Math.max(...sorted.map((i) => Math.abs(i.importance)), Number.EPSILON)
   const fmt = new Intl.NumberFormat('en-US', { maximumSignificantDigits: 3 })
@@ -164,9 +178,9 @@ function GlobalImportance({ items }: { items: NonNullable<Explanation['global_im
         {sorted.map((item) => (
           <li key={item.key} className="grid grid-cols-[minmax(0,9rem)_1fr_auto] items-center gap-3 text-sm">
             <span className="truncate text-ink">{item.label}</span>
-            <span aria-hidden className="h-1.5 rounded-full bg-sand-soft">
+            <span aria-hidden className="h-1.5 bg-canvas">
               <span
-                className="block h-full rounded-full bg-control"
+                className={cn('block h-full', tone === 'graph' ? 'bg-clay' : 'bg-deep-blue')}
                 style={{ width: `${(Math.abs(item.importance) / max) * 100}%` }}
               />
             </span>
@@ -180,7 +194,7 @@ function GlobalImportance({ items }: { items: NonNullable<Explanation['global_im
 
 function Unavailable() {
   return (
-    <p className="rounded-md bg-sand-soft px-4 py-3 text-sm text-ink-muted">
+    <p className="border border-border bg-canvas px-4 py-3 text-sm text-ink-muted">
       Feature explanation unavailable for this estimate
     </p>
   )
@@ -188,7 +202,7 @@ function Unavailable() {
 
 function ChartSkeleton({ label }: { label: string }) {
   return (
-    <div className="space-y-3 rounded-xl border border-border bg-surface p-5" aria-busy="true">
+    <div className="space-y-3 border border-border bg-surface p-5" aria-busy="true">
       <p className="text-sm text-ink-muted">{label}</p>
       {[0, 1, 2, 3].map((i) => (
         <div key={i} className="space-y-1.5">

@@ -71,7 +71,7 @@ export function DiscoveryPane() {
         <div className={cn('absolute inset-0', !showMap && 'hidden')}>
           <Suspense
             fallback={
-              <div className="absolute inset-0 flex items-center justify-center bg-sand-soft">
+              <div className="absolute inset-0 flex items-center justify-center bg-land">
                 <Spinner label="Loading map…" className="text-ink-muted" />
               </div>
             }
@@ -129,9 +129,9 @@ function ResultsTray({
         type="button"
         aria-expanded={false}
         onClick={() => onOpenChange(true)}
-        className="absolute top-3 left-3 z-20 inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-surface px-4 text-sm font-medium text-ink shadow-lift transition-colors duration-150 hover:border-evergreen hover:bg-evergreen-soft"
+        className="absolute top-3 left-3 z-20 inline-flex min-h-11 items-center gap-2 rounded-sm border border-border bg-surface px-4 text-sm font-medium text-ink transition-colors duration-150 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-ink hover:bg-canvas"
       >
-        <PanelLeftOpen aria-hidden className="size-4 text-evergreen" />
+        <PanelLeftOpen aria-hidden className="size-4 text-ink" />
         Search &amp; results
         {!results.isPending && <span className="text-ink-muted tabular">· {countText(results)}</span>}
       </button>
@@ -141,7 +141,7 @@ function ResultsTray({
   return (
     <aside
       aria-label="Search and results"
-      className="absolute top-3 bottom-3 left-3 z-20 flex flex-col overflow-hidden rounded-xl border border-border bg-surface shadow-lift motion-safe:animate-[ks-fade_160ms_ease-out]"
+      className="absolute top-3 bottom-3 left-3 z-20 flex flex-col overflow-hidden rounded-sm border border-border bg-surface motion-safe:animate-[ks-fade_250ms_var(--ease-out-expo)]"
       style={{ width: TRAY_WIDTH }}
     >
       <div className="border-b border-border px-4 pt-3.5 pb-4">
@@ -152,7 +152,7 @@ function ResultsTray({
             aria-expanded
             aria-controls={bodyId}
             onClick={() => onOpenChange(false)}
-            className="-mr-1.5 inline-flex size-11 items-center justify-center rounded-full text-ink-muted transition-colors duration-150 hover:bg-sand-soft hover:text-ink"
+            className="-mr-1.5 inline-flex size-11 items-center justify-center rounded-sm text-ink-muted transition-colors duration-150 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-canvas hover:text-ink"
           >
             <PanelLeftClose aria-hidden className="size-4.5" />
             <span className="sr-only">Hide search and results</span>
@@ -228,7 +228,7 @@ function MobileDiscoveryBar({
           <SlidersHorizontal aria-hidden className="size-4" />
           Filters
           {count > 0 && (
-            <span aria-hidden className="inline-flex size-5 items-center justify-center rounded-full bg-evergreen text-[0.75rem] font-semibold text-white">
+            <span aria-hidden className="inline-flex size-5 items-center justify-center bg-ink text-[0.75rem] font-semibold text-surface">
               {count}
             </span>
           )}
@@ -291,9 +291,9 @@ function MapOverlays({
 
   const hint = creating && mapUp && (
     <output
-      className="pointer-events-auto flex max-w-[24rem] items-start gap-2 rounded-lg border border-evergreen/40 bg-surface px-3.5 py-2.5 text-sm text-ink shadow-soft"
+      className="pointer-events-auto flex max-w-[24rem] items-start gap-2 rounded-sm border border-ink bg-surface px-3.5 py-2.5 text-sm text-ink"
     >
-      <MousePointerClick aria-hidden className="mt-0.5 size-4 shrink-0 text-evergreen" />
+      <MousePointerClick aria-hidden className="mt-0.5 size-4 shrink-0 text-ink" />
       Click the map to place your property, or enter coordinates in the form
     </output>
   )
@@ -311,7 +311,7 @@ function MapOverlays({
     />
   )
   const note = truncated && mapUp && (
-    <p className="rounded-full border border-border bg-surface/95 px-3 py-1 text-[0.75rem] text-ink-muted shadow-soft">
+    <p className="border border-border bg-surface/95 px-3 py-1 text-[0.75rem] text-ink-muted">
       Showing the first {MAP_MARKER_LIMIT} matches on the map
     </p>
   )

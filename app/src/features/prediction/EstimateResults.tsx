@@ -53,7 +53,7 @@ export function EstimateResults({ workflow, metadata }: Props) {
 
 function PendingEstimate() {
   return (
-    <div className="rounded-xl border border-border bg-surface p-5 shadow-soft sm:p-6" aria-busy="true">
+    <div className="border-y border-border py-5" aria-busy="true">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h3 className="font-display text-xl text-ink">Estimated historical value</h3>
         <span className="text-sm font-medium text-ink-muted">

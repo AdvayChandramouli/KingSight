@@ -16,7 +16,7 @@ export function PanelLoading({ label }: { label: string }) {
         <Skeleton className="h-9 w-2/3" />
         <Skeleton className="h-5 w-1/3" />
       </div>
-      <Skeleton className="h-24 w-full rounded-lg" />
+      <Skeleton className="h-24 w-full rounded-sm" />
       <div className="grid grid-cols-3 gap-4">
         {Array.from({ length: 6 }, (_, i) => (
           <Skeleton key={i} className="h-11" />

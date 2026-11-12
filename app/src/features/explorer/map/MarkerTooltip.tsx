@@ -24,12 +24,14 @@ export function MarkerTooltip({ record, x, y, containerWidth, lift = 14, note }:
     <div
       role="tooltip"
       className={cn(
-        'pointer-events-none absolute z-20 w-max max-w-60 -translate-x-1/2 rounded-md border border-border bg-surface px-3 py-2 text-[0.8125rem] leading-snug text-ink shadow-lift motion-safe:animate-[ks-fade_120ms_ease-out]',
+        'pointer-events-none absolute z-20 w-max max-w-60 -translate-x-1/2 rounded-sm border border-border bg-surface px-3 py-2 text-[0.8125rem] leading-snug text-ink',
         !below && '-translate-y-full',
       )}
       style={{ left, top: below ? y + lift : y - lift }}
     >
-      <p className="font-semibold">Property {record.id}</p>
+      <p className="font-medium">
+        Property <span className="font-mono">{record.id}</span>
+      </p>
       <p className="tabular text-ink-muted">{formatSqft(record.attributes.sqft_living)}</p>
       <p className={cn('tabular', record.actual_price_usd == null ? 'text-ink-muted' : 'text-ink')}>
         {recordedSaleText(record)}

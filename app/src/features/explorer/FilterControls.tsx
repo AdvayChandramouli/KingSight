@@ -7,7 +7,7 @@ import type { WaterfrontFilter } from './explorerState'
 import type { FilterDraftApi } from './useFilterDraft'
 
 const inputClass =
-  'block w-full min-h-11 rounded-md border border-control/70 bg-surface px-3 text-[0.95rem] text-ink placeholder:text-ink-muted/80 transition-colors duration-150 hover:border-control focus-visible:border-evergreen focus-visible:outline-2 focus-visible:outline-offset-0 aria-invalid:border-danger'
+  'block w-full min-h-11 rounded-sm border border-control/70 bg-surface px-3 text-[0.95rem] text-ink placeholder:text-ink-muted/80 transition-colors duration-150 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-ink focus-visible:border-brass focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-brass aria-invalid:border-danger'
 
 export function SearchField({ api }: { api: FilterDraftApi }) {
   const id = useId()
@@ -34,7 +34,7 @@ export function SearchField({ api }: { api: FilterDraftApi }) {
             type="button"
             aria-label="Clear search"
             onClick={() => api.setQ('')}
-            className="absolute top-1/2 right-0.5 inline-flex size-10 -translate-y-1/2 items-center justify-center rounded-full text-ink-muted hover:bg-sand-soft hover:text-ink"
+            className="absolute top-1/2 right-0.5 inline-flex size-10 -translate-y-1/2 items-center justify-center rounded-sm text-ink-muted hover:bg-canvas hover:text-ink"
           >
             <X aria-hidden className="size-4" />
           </button>

@@ -33,7 +33,7 @@ export function PrimaryEstimateCard({ workflow, view, metadata, stale }: Props) 
   return (
     <article
       aria-labelledby={headingId}
-      className="rounded-xl border border-border bg-surface p-5 shadow-soft sm:p-6"
+      className="border-y border-border py-5"
     >
       {primary?.state === 'success' && primary.result ? (
         <>
@@ -46,7 +46,7 @@ export function PrimaryEstimateCard({ workflow, view, metadata, stale }: Props) 
           <p
             data-testid="primary-estimate-value"
             className={cn(
-              'mt-2 font-display text-[2.75rem] leading-none font-medium tracking-[-0.02em] tabular sm:text-[3.25rem]',
+              'mt-2 text-[2.75rem] leading-none font-medium tracking-[-0.02em] tabular sm:text-[3.25rem]',
               stale ? 'text-ink-muted' : 'text-ink',
             )}
           >
@@ -87,7 +87,7 @@ export function PrimaryEstimateCard({ workflow, view, metadata, stale }: Props) 
 
 function IllustrativeChip() {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-clay/40 bg-clay-soft px-2.5 py-0.5 text-[0.8125rem] font-medium text-clay-ink">
+    <span className="inline-flex items-center gap-1.5 rounded-sm border border-border px-2 py-0.5 text-[0.8125rem] font-medium text-ink">
       <FlaskConical aria-hidden className="size-3.5" />
       Illustrative demo estimate
     </span>
@@ -111,14 +111,14 @@ function RecordedPriceComparison({ workflow, predicted }: { workflow: EstimateWo
 
   if (actual == null || predicted == null) {
     return (
-      <p className="mt-5 rounded-md bg-sand-soft px-4 py-3 text-sm text-ink-muted">
+      <p className="mt-5 border border-border bg-canvas px-4 py-3 text-sm text-ink-muted">
         Recorded sale price unavailable — no comparison
       </p>
     )
   }
 
   return (
-    <dl className="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 rounded-md bg-sand-soft px-4 py-3 text-sm">
+    <dl className="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 border border-border bg-canvas px-4 py-3 text-sm">
       <div>
         <dt className="text-ink-muted">Recorded sale price</dt>
         <dd className="mt-0.5 font-semibold text-ink tabular">{formatUsd(actual)}</dd>
@@ -167,9 +167,9 @@ function PrimaryUnavailable({
       {alternatives.map((alt) => {
         const altModel = findModel(metadata, alt.modelId)
         return (
-          <div key={alt.modelId} className="mt-5 rounded-md bg-sand-soft px-4 py-3">
+          <div key={alt.modelId} className="mt-5 border border-border bg-canvas px-4 py-3">
             {altModel && <ModelTag model={altModel} />}
-            <p className="mt-1 font-display text-2xl text-ink tabular">{formatUsd(alt.result?.predicted_price_usd)}</p>
+            <p className="mt-1 text-2xl text-ink tabular">{formatUsd(alt.result?.predicted_price_usd)}</p>
             <p className="mt-1 text-sm text-ink-muted">
               This is the {modelName(metadata, alt.modelId)}’s estimate, not the primary estimate. Open Compare
               models to see each model separately.

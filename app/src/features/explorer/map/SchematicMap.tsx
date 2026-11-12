@@ -266,7 +266,7 @@ export function SchematicMap({
           ? 'Schematic map. Click inside the map to place your new property.'
           : 'Schematic property map. The property list shows the same records.'
       }
-      className="absolute inset-0 overflow-hidden bg-sand-soft"
+      className="absolute inset-0 overflow-hidden bg-land"
     >
       <svg
         ref={svgRef}
@@ -299,7 +299,7 @@ export function SchematicMap({
             <path
               d={coveragePath}
               fill="none"
-              stroke="var(--color-evergreen)"
+              stroke="var(--color-ink)"
               strokeOpacity={creating ? 0.9 : 0.35}
               strokeWidth={creating ? 2.5 : 1.25}
               strokeDasharray={creating ? '7 5' : undefined}
@@ -344,9 +344,9 @@ export function SchematicMap({
                     >
                       <circle r={16} fill="transparent" />
                       {activePoint?.record.id === only.id && (
-                        <circle r={11} fill="none" stroke="var(--color-evergreen)" strokeWidth={2} />
+                        <circle r={11} fill="none" stroke="var(--color-brass, var(--color-ink))" strokeWidth={2} />
                       )}
-                      <circle r={6.5} fill="var(--color-evergreen)" fillOpacity={creating ? 0.45 : 0.9} stroke="#fffefa" strokeWidth={1.75} />
+                      <circle r={6.5} fill="var(--color-ink)" fillOpacity={creating ? 0.45 : 0.9} stroke="var(--color-surface)" strokeWidth={1.75} />
                     </MapMarker>
                   )
                 }
@@ -361,8 +361,8 @@ export function SchematicMap({
                     onActivate={() => zoomIntoCluster(c.x, c.y)}
                     onActiveChange={() => setActive(null)}
                   >
-                    <circle r={r + 4} fill="var(--color-evergreen)" fillOpacity={0.14} />
-                    <circle r={r} fill="#fffefa" stroke="var(--color-evergreen)" strokeWidth={2} opacity={creating ? 0.6 : 1} />
+                    <circle r={r + 4} fill="var(--color-ink)" fillOpacity={0.1} />
+                    <circle r={r} fill="var(--color-surface)" stroke="var(--color-ink)" strokeWidth={2} opacity={creating ? 0.6 : 1} />
                     <text
                       textAnchor="middle"
                       dominantBaseline="central"
@@ -396,7 +396,7 @@ export function SchematicMap({
                       {(inspected || activePoint?.record.id === n.property.id) && (
                         <rect x={-s - 5} y={-s - 5} width={(s + 5) * 2} height={(s + 5) * 2} rx={5} fill="none" stroke="var(--color-clay)" strokeWidth={2} />
                       )}
-                      <rect x={-s} y={-s} width={s * 2} height={s * 2} rx={3} fill="var(--color-clay)" stroke="#fffefa" strokeWidth={1.75} />
+                      <rect x={-s} y={-s} width={s * 2} height={s * 2} fill="var(--color-clay)" stroke="var(--color-surface)" strokeWidth={1.75} />
                     </MapMarker>
                   )
                 })}
@@ -412,9 +412,13 @@ export function SchematicMap({
                 onActivate={() => onSelect(selected.id)}
                 onActiveChange={(on) => setActive(on ? { kind: 'record', record: selected } : null)}
               >
-                <circle r={20} fill="var(--color-evergreen)" fillOpacity={0.16} />
-                <circle r={11} fill="#fffefa" stroke="var(--color-evergreen)" strokeWidth={3.5} />
-                <circle r={4.5} fill="var(--color-evergreen)" />
+                <path
+                  d="M0 2 C-2.2 -4 -8 -8 -8 -14 a8 8 0 0 1 16 0 c0 6 -5.8 10 -8 16Z"
+                  fill="var(--color-brass, var(--color-ink))"
+                  stroke="var(--color-surface)"
+                  strokeWidth={1.5}
+                />
+                <rect x={-3} y={-17} width={6} height={6} fill="var(--color-surface)" />
               </MapMarker>
             )}
 
@@ -462,7 +466,7 @@ export function SchematicMap({
         canZoomIn={view.zoom < MAX_ZOOM}
         canZoomOut={view.zoom > MIN_ZOOM + 0.001}
       />
-      <p className="pointer-events-none absolute right-3 bottom-3 z-10 max-w-[calc(100%-1.5rem)] rounded-full border border-border bg-surface/95 px-3 py-1 text-[0.75rem] font-medium text-ink-muted shadow-soft">
+      <p className="pointer-events-none absolute right-3 bottom-3 z-10 max-w-[calc(100%-1.5rem)] border border-border bg-surface/95 px-3 py-1 text-[0.75rem] font-medium text-ink-muted">
         Schematic map · offline preview, not a geographic basemap
       </p>
     </section>
@@ -512,8 +516,8 @@ function MarkerLabel({ x, y, tone, children }: { x: number; y: number; tone: 'se
     <span
       aria-hidden
       className={cn(
-        'pointer-events-none absolute z-10 -translate-x-1/2 rounded-full px-2.5 py-0.5 text-[0.75rem] font-semibold whitespace-nowrap shadow-soft',
-        tone === 'selected' ? 'bg-evergreen text-white' : 'border border-ink bg-surface text-ink',
+        'pointer-events-none absolute z-10 -translate-x-1/2 border px-1.5 py-0.5 text-[0.75rem] font-medium whitespace-nowrap transition-colors duration-150 ease-[cubic-bezier(0.16,1,0.3,1)]',
+        tone === 'selected' ? 'border-brass bg-surface font-mono text-ink ring-1 ring-brass' : 'border-ink bg-surface text-ink',
       )}
       style={{ left: x, top: y }}
     >
@@ -527,8 +531,8 @@ function DraftPin() {
   return (
     <g>
       <ellipse cx={0} cy={1} rx={6} ry={2.5} fill="var(--color-ink)" fillOpacity={0.2} />
-      <path d="M0 0 C-3 -7 -11 -12 -11 -21 a11 11 0 0 1 22 0 c0 9 -8 14 -11 21Z" fill="var(--color-ink)" stroke="#fffefa" strokeWidth={1.75} />
-      <rect x={-4} y={-25} width={8} height={8} rx={1.5} fill="#fffefa" />
+      <path d="M0 0 C-3 -7 -11 -12 -11 -21 a11 11 0 0 1 22 0 c0 9 -8 14 -11 21Z" fill="var(--color-ink)" stroke="var(--color-surface)" strokeWidth={1.75} />
+      <rect x={-4} y={-25} width={8} height={8} fill="var(--color-surface)" />
     </g>
   )
 }

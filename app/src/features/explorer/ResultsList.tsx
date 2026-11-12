@@ -1,4 +1,4 @@
-import { Check, SearchX } from 'lucide-react'
+import { SearchX } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Notice } from '@/components/ui/Notice'
 import { Skeleton, Spinner } from '@/components/ui/Skeleton'
@@ -31,17 +31,19 @@ function ResultRow({ record, selected, onSelect }: { record: PropertyRecord; sel
         aria-current={selected ? 'true' : undefined}
         onClick={() => onSelect(record.id)}
         className={cn(
-          'group relative block min-h-11 w-full rounded-md border px-3.5 py-2.5 text-left transition-colors duration-150',
+          'group relative block min-h-11 w-full border px-3.5 py-2.5 text-left transition-colors duration-150 ease-[cubic-bezier(0.16,1,0.3,1)]',
           selected
-            ? 'border-evergreen bg-evergreen-soft'
-            : 'border-transparent hover:border-border hover:bg-sand-soft',
+            ? 'border-brass bg-canvas ring-1 ring-brass'
+            : 'border-transparent hover:border-border hover:bg-canvas',
         )}
       >
         <span className="flex items-baseline justify-between gap-3">
-          <span className="font-semibold text-ink">Property {record.id}</span>
+          <span className="font-medium text-ink">
+            Property <span className="font-mono">{record.id}</span>
+          </span>
           {selected && (
-            <span className="inline-flex shrink-0 items-center gap-1 text-[0.8125rem] font-semibold text-evergreen">
-              <Check aria-hidden className="size-3.5" strokeWidth={2.75} />
+            <span className="inline-flex shrink-0 items-center gap-1.5 text-[0.8125rem] font-medium text-ink">
+              <span aria-hidden className="size-2 rotate-45 bg-brass ring-1 ring-ink" />
               Selected
             </span>
           )}
@@ -99,7 +101,7 @@ export function ResultsList({ results, onSelect, onClearFilters, className }: Pr
 
   if (items.length === 0) {
     return (
-      <div className={cn('rounded-lg border border-dashed border-border bg-sand-soft/60 px-5 py-6 text-center', className)}>
+      <div className={cn('rounded-sm border border-dashed border-border bg-canvas px-5 py-6 text-center', className)}>
         <SearchX aria-hidden className="mx-auto size-6 text-ink-muted" />
         <p className="mt-2 font-semibold text-ink">No properties match these filters</p>
         <p className="mt-1 text-sm text-ink-muted">

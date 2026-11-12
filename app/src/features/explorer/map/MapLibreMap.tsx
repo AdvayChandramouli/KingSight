@@ -17,15 +17,45 @@ import { MarkerTooltip } from './MarkerTooltip'
 import { useElementSize } from './useElementSize'
 
 const SELECT_ZOOM = 12.5
-const COLORS = {
-  evergreen: '#31594a',
-  surface: '#fffefa',
+
+/** Current token hexes, used only when a CSS variable has not been painted yet. */
+const FALLBACK = {
   ink: '#203a32',
+  surface: '#fffefa',
   clay: '#9a654a',
+  deepBlue: '#38596d',
   water: '#c9dce3',
-  waterLine: '#a9c4ce',
-  land: '#e9ede1',
-  green: '#d7e3cf',
+  land: '#e6ebdd',
+}
+
+type Palette = {
+  ink: string
+  surface: string
+  clay: string
+  brass: string
+  water: string
+  waterLine: string
+  land: string
+}
+
+function cssColor(name: string, fallback: string): string {
+  if (typeof document === 'undefined') return fallback
+  const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim()
+  return value || fallback
+}
+
+/** Reads the live tokens so a foundations retune reaches the basemap without a second palette. */
+function palette(): Palette {
+  const ink = cssColor('--color-ink', FALLBACK.ink)
+  return {
+    ink,
+    surface: cssColor('--color-surface', FALLBACK.surface),
+    clay: cssColor('--color-clay', FALLBACK.clay),
+    brass: cssColor('--color-brass', ink),
+    water: cssColor('--color-water', FALLBACK.water),
+    waterLine: cssColor('--color-deep-blue', FALLBACK.deepBlue),
+    land: cssColor('--color-land', FALLBACK.land),
+  }
 }
 
 type Hover = { kind: 'record' | 'neighbor'; id: string } | null
@@ -45,18 +75,19 @@ function points(records: PropertyRecord[]): FeatureCollection {
 
 const EMPTY: FeatureCollection = { type: 'FeatureCollection', features: [] }
 
-/** Light vector basemap toward the product palette: subdued roads, green land, blue water. */
+/** Cooler land and darker water through the existing basemap paint hook. */
 function restyleBasemap(map: MapLibre) {
+  const color = palette()
   for (const layer of map.getStyle().layers ?? []) {
     const id = layer.id.toLowerCase()
     try {
-      if (layer.type === 'background') map.setPaintProperty(layer.id, 'background-color', COLORS.land)
+      if (layer.type === 'background') map.setPaintProperty(layer.id, 'background-color', color.land)
       else if (layer.type === 'fill' && /water|ocean|lake|river|reservoir/.test(id))
-        map.setPaintProperty(layer.id, 'fill-color', COLORS.water)
+        map.setPaintProperty(layer.id, 'fill-color', color.water)
       else if (layer.type === 'fill' && /park|wood|forest|grass|landcover|green|nature|scrub|wetland/.test(id))
-        map.setPaintProperty(layer.id, 'fill-color', COLORS.green)
+        map.setPaintProperty(layer.id, 'fill-color', color.land)
       else if (layer.type === 'line' && /water|river|stream|canal/.test(id))
-        map.setPaintProperty(layer.id, 'line-color', COLORS.waterLine)
+        map.setPaintProperty(layer.id, 'line-color', color.waterLine)
       else if (layer.type === 'line' && /road|highway|street|path|bridge|tunnel|rail|motorway/.test(id))
         map.setPaintProperty(layer.id, 'line-opacity', 0.5)
     } catch {
@@ -77,7 +108,7 @@ function findTextFont(map: MapLibre): string[] | null {
 }
 
 /** Rounded-square icon so connected homes differ from round markers by shape, not color alone. */
-function neighborIcon(): ImageData | null {
+function neighborIcon(color: Palette): ImageData | null {
   const ratio = 2
   const size = 18 * ratio
   const canvas = document.createElement('canvas')
@@ -85,8 +116,8 @@ function neighborIcon(): ImageData | null {
   canvas.height = size
   const ctx = canvas.getContext('2d')
   if (!ctx) return null
-  ctx.fillStyle = COLORS.clay
-  ctx.strokeStyle = COLORS.surface
+  ctx.fillStyle = color.clay
+  ctx.strokeStyle = color.surface
   ctx.lineWidth = 3.5
   ctx.beginPath()
   ctx.roundRect(3.5, 3.5, size - 7, size - 7, 6)
@@ -96,6 +127,7 @@ function neighborIcon(): ImageData | null {
 }
 
 function addOverlay(map: MapLibre, coverage: MapEngineProps['coverage']) {
+  const color = palette()
   map.addSource('ks-coverage', {
     type: 'geojson',
     data: { type: 'Feature', geometry: { type: 'Polygon', coordinates: [coverage.polygon] }, properties: {} },
@@ -104,24 +136,24 @@ function addOverlay(map: MapLibre, coverage: MapEngineProps['coverage']) {
   map.addSource('ks-properties', { type: 'geojson', data: EMPTY, cluster: true, clusterRadius: 44, clusterMaxZoom: 14 })
   map.addSource('ks-neighbors', { type: 'geojson', data: EMPTY })
 
-  const icon = neighborIcon()
+  const icon = neighborIcon(color)
   if (icon) map.addImage('ks-neighbor', icon, { pixelRatio: 2 })
   const font = findTextFont(map)
 
   const layers: LayerSpecification[] = [
-    { id: 'ks-coverage-fill', type: 'fill', source: 'ks-coverage', paint: { 'fill-color': COLORS.evergreen, 'fill-opacity': 0.03 } },
+    { id: 'ks-coverage-fill', type: 'fill', source: 'ks-coverage', paint: { 'fill-color': color.ink, 'fill-opacity': 0.03 } },
     {
       id: 'ks-coverage-line',
       type: 'line',
       source: 'ks-coverage',
-      paint: { 'line-color': COLORS.evergreen, 'line-opacity': 0.45, 'line-width': 1.25 },
+      paint: { 'line-color': color.ink, 'line-opacity': 0.45, 'line-width': 1.25 },
     },
     {
       id: 'ks-edges-solid',
       type: 'line',
       source: 'ks-edges',
       filter: ['!=', ['get', 'edge_type'], 'similarity'],
-      paint: { 'line-color': COLORS.clay, 'line-opacity': 0.85, 'line-width': ['case', ['get', 'inspected'], 2.75, 1.6] },
+      paint: { 'line-color': color.clay, 'line-opacity': 0.85, 'line-width': ['case', ['get', 'inspected'], 2.75, 1.6] },
     },
     {
       id: 'ks-edges-dashed',
@@ -129,7 +161,7 @@ function addOverlay(map: MapLibre, coverage: MapEngineProps['coverage']) {
       source: 'ks-edges',
       filter: ['==', ['get', 'edge_type'], 'similarity'],
       paint: {
-        'line-color': COLORS.clay,
+        'line-color': color.clay,
         'line-opacity': 0.85,
         'line-width': ['case', ['get', 'inspected'], 2.75, 1.6],
         'line-dasharray': [3, 2],
@@ -141,8 +173,8 @@ function addOverlay(map: MapLibre, coverage: MapEngineProps['coverage']) {
       source: 'ks-properties',
       filter: ['has', 'point_count'],
       paint: {
-        'circle-color': COLORS.evergreen,
-        'circle-opacity': 0.14,
+        'circle-color': color.ink,
+        'circle-opacity': 0.12,
         'circle-radius': ['step', ['get', 'point_count'], 20, 10, 24, 25, 28],
       },
     },
@@ -152,8 +184,8 @@ function addOverlay(map: MapLibre, coverage: MapEngineProps['coverage']) {
       source: 'ks-properties',
       filter: ['has', 'point_count'],
       paint: {
-        'circle-color': COLORS.surface,
-        'circle-stroke-color': COLORS.evergreen,
+        'circle-color': color.surface,
+        'circle-stroke-color': color.ink,
         'circle-stroke-width': 2,
         'circle-radius': ['step', ['get', 'point_count'], 15, 10, 18, 25, 21],
       },
@@ -163,7 +195,7 @@ function addOverlay(map: MapLibre, coverage: MapEngineProps['coverage']) {
       type: 'circle',
       source: 'ks-properties',
       filter: ['==', ['get', 'id'], ''],
-      paint: { 'circle-radius': 11, 'circle-color': 'rgba(0,0,0,0)', 'circle-stroke-color': COLORS.evergreen, 'circle-stroke-width': 2 },
+      paint: { 'circle-radius': 11, 'circle-color': 'rgba(0,0,0,0)', 'circle-stroke-color': color.brass, 'circle-stroke-width': 2 },
     },
     {
       id: 'ks-points',
@@ -172,9 +204,9 @@ function addOverlay(map: MapLibre, coverage: MapEngineProps['coverage']) {
       filter: ['!', ['has', 'point_count']],
       paint: {
         'circle-radius': 6.5,
-        'circle-color': COLORS.evergreen,
+        'circle-color': color.ink,
         'circle-opacity': 0.9,
-        'circle-stroke-color': COLORS.surface,
+        'circle-stroke-color': color.surface,
         'circle-stroke-width': 1.75,
       },
     },
@@ -183,7 +215,7 @@ function addOverlay(map: MapLibre, coverage: MapEngineProps['coverage']) {
       type: 'circle',
       source: 'ks-neighbors',
       filter: ['any', ['get', 'inspected'], ['get', 'hovered']],
-      paint: { 'circle-radius': 15, 'circle-color': 'rgba(0,0,0,0)', 'circle-stroke-color': COLORS.clay, 'circle-stroke-width': 2 },
+      paint: { 'circle-radius': 15, 'circle-color': 'rgba(0,0,0,0)', 'circle-stroke-color': color.clay, 'circle-stroke-width': 2 },
     },
   ]
   if (icon) {
@@ -198,7 +230,7 @@ function addOverlay(map: MapLibre, coverage: MapEngineProps['coverage']) {
       id: 'ks-neighbors',
       type: 'circle',
       source: 'ks-neighbors',
-      paint: { 'circle-radius': 7, 'circle-color': COLORS.clay, 'circle-stroke-color': COLORS.surface, 'circle-stroke-width': 2 },
+      paint: { 'circle-radius': 7, 'circle-color': color.clay, 'circle-stroke-color': color.surface, 'circle-stroke-width': 2 },
     })
   }
   if (font) {
@@ -208,7 +240,7 @@ function addOverlay(map: MapLibre, coverage: MapEngineProps['coverage']) {
       source: 'ks-properties',
       filter: ['has', 'point_count'],
       layout: { 'text-field': ['get', 'point_count_abbreviated'], 'text-font': font, 'text-size': 12, 'text-allow-overlap': true },
-      paint: { 'text-color': COLORS.ink },
+      paint: { 'text-color': color.ink },
     })
   }
   for (const layer of layers) map.addLayer(layer)
@@ -218,31 +250,30 @@ function padding({ insetLeft, insetBottom }: Pick<MapEngineProps, 'insetLeft' | 
   return { top: 72, bottom: Math.max(40, Math.min(40 + insetBottom, height - 72 - 96)), right: 40, left: insetLeft + 40 }
 }
 
+const ARRIVE = 'duration-150 ease-[cubic-bezier(0.16,1,0.3,1)]'
+
+/** Brass pin, distinct from the round property marks, with the id on paper. */
 function selectedElement(): { root: HTMLDivElement; label: HTMLSpanElement } {
   const root = document.createElement('div')
   root.setAttribute('aria-hidden', 'true')
-  root.className = 'pointer-events-none relative size-[24px]'
-  const ring = document.createElement('span')
-  ring.className =
-    'absolute inset-0 rounded-full border-[3.5px] border-evergreen bg-surface shadow-[0_0_0_9px_rgb(49_89_74/0.16)]'
-  const dot = document.createElement('span')
-  dot.className = 'absolute top-1/2 left-1/2 size-[9px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-evergreen'
+  root.className = 'pointer-events-none relative text-brass'
+  root.innerHTML =
+    '<svg width="22" height="28" viewBox="-11 -26 22 28" class="overflow-visible"><path d="M0 1 C-2.4 -5 -9 -9 -9 -16 a9 9 0 0 1 18 0 c0 7 -6.6 11 -9 17Z" fill="currentColor" stroke="var(--color-surface, #fffefa)" stroke-width="1.5"/><rect x="-3.25" y="-19.25" width="6.5" height="6.5" fill="var(--color-surface, #fffefa)"/></svg>'
   const label = document.createElement('span')
-  label.className =
-    'absolute top-full left-1/2 mt-2 -translate-x-1/2 rounded-full bg-evergreen px-2.5 py-0.5 text-[0.75rem] font-semibold whitespace-nowrap text-white shadow-soft'
-  root.append(ring, dot, label)
+  label.className = `absolute top-full left-1/2 mt-1 -translate-x-1/2 border border-brass bg-surface px-1.5 py-0.5 font-mono text-[0.6875rem] leading-none font-medium whitespace-nowrap text-ink ring-1 ring-brass transition-colors ${ARRIVE}`
+  root.append(label)
   return { root, label }
 }
 
 function draftElement(): HTMLDivElement {
   const root = document.createElement('div')
   root.setAttribute('aria-hidden', 'true')
-  root.className = 'pointer-events-none relative flex w-[26px] justify-center'
+  root.className = 'pointer-events-none relative flex w-[26px] justify-center text-ink'
   root.innerHTML =
-    '<svg width="26" height="34" viewBox="-13 -32 26 34"><ellipse cx="0" cy="1" rx="6" ry="2.5" fill="#203a32" fill-opacity="0.2"/><path d="M0 0 C-3 -7 -11 -12 -11 -21 a11 11 0 0 1 22 0 c0 9 -8 14 -11 21Z" fill="#203a32" stroke="#fffefa" stroke-width="1.75"/><rect x="-4" y="-25" width="8" height="8" rx="1.5" fill="#fffefa"/></svg>'
+    '<svg width="26" height="34" viewBox="-13 -32 26 34"><ellipse cx="0" cy="1" rx="6" ry="2.5" fill="currentColor" fill-opacity="0.2"/><path d="M0 0 C-3 -7 -11 -12 -11 -21 a11 11 0 0 1 22 0 c0 9 -8 14 -11 21Z" fill="currentColor" stroke="var(--color-surface, #fffefa)" stroke-width="1.75"/><rect x="-4" y="-25" width="8" height="8" fill="var(--color-surface, #fffefa)"/></svg>'
   const label = document.createElement('span')
   label.className =
-    'absolute top-full left-1/2 mt-1 -translate-x-1/2 rounded-full border border-ink bg-surface px-2.5 py-0.5 text-[0.75rem] font-semibold whitespace-nowrap text-ink shadow-soft'
+    'absolute top-full left-1/2 mt-1 -translate-x-1/2 border border-ink bg-surface px-1.5 py-0.5 text-[0.75rem] font-medium whitespace-nowrap text-ink'
   label.textContent = 'New property'
   root.append(label)
   return root
@@ -462,7 +493,7 @@ export function MapLibreMap(props: MapEngineProps) {
     }
     if (!selectedMarker.current) {
       const { root, label } = selectedElement()
-      selectedMarker.current = { marker: new Marker({ element: root, anchor: 'center' }), label }
+      selectedMarker.current = { marker: new Marker({ element: root, anchor: 'bottom' }), label }
     }
     const { marker, label } = selectedMarker.current
     label.textContent = selected.id
@@ -561,7 +592,7 @@ export function MapLibreMap(props: MapEngineProps) {
   const hoverPoint = hoverRecord && map ? map.project([hoverRecord.record.longitude, hoverRecord.record.latitude]) : null
 
   return (
-    <div className="absolute inset-0 overflow-hidden bg-sand-soft">
+    <div className="absolute inset-0 overflow-hidden bg-land">
       <section
         className="absolute inset-0"
         aria-label={

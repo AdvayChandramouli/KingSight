@@ -133,7 +133,7 @@ function useRestoreFocus(open: boolean) {
 function Section({
   icon: Icon,
   title,
-  iconClass = 'text-evergreen',
+  iconClass = 'text-ink',
   children,
 }: {
   icon: LucideIcon
@@ -155,7 +155,7 @@ function Section({
 function GraphRule({ metadata, loading }: { metadata: Metadata | undefined; loading: boolean }) {
   if (loading) {
     return (
-      <div aria-busy="true" aria-label="Loading graph details" className="space-y-2 rounded-md bg-sand-soft p-4">
+      <div aria-busy="true" aria-label="Loading graph details" className="space-y-2 border border-border bg-canvas p-4">
         <Skeleton className="h-4 w-2/3" />
         <Skeleton className="h-4 w-full" />
       </div>
@@ -168,7 +168,7 @@ function GraphRule({ metadata, loading }: { metadata: Metadata | undefined; load
     return <p>Graph context isn’t available in this version.</p>
   }
   return (
-    <div className="rounded-md bg-clay-soft/70 p-4">
+    <div className="border border-clay/40 bg-clay-soft/70 p-4">
       <p className="font-medium text-ink">{metadata.graph.rule_label}</p>
       {metadata.graph.description && <p className="mt-1">{metadata.graph.description}</p>}
     </div>
@@ -185,7 +185,7 @@ function Metrics({ metrics, metadata }: { metrics: VerifiedMetric[]; metadata: M
         These figures were supplied with the models. Each one names the homes it was measured on, the
         price scale used, and where it comes from.
       </p>
-      <dl className="divide-y divide-border rounded-md border border-border bg-surface">
+      <dl className="divide-y divide-border border border-border bg-surface">
         {metrics.map((m) => (
           <div key={`${m.model_id}-${m.name}`} className="px-4 py-3">
             <dt className="text-sm text-ink-muted">

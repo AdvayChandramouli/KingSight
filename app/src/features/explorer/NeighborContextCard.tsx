@@ -49,15 +49,15 @@ export function NeighborContextCard({ neighbor, onClose, className, focusOnOpen 
       aria-labelledby={titleId}
       tabIndex={-1}
       className={cn(
-        'w-full max-w-[22rem] rounded-xl border border-border bg-surface p-4 shadow-lift outline-none motion-safe:animate-[ks-reveal_180ms_var(--ease-out-expo)]',
+        'w-full max-w-[22rem] rounded-sm border border-border bg-surface p-4 outline-none focus-visible:ring-2 focus-visible:ring-brass',
         className,
       )}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-[0.8125rem] font-medium text-clay-ink">Connected home</p>
-          <h3 id={titleId} className="mt-0.5 font-display text-xl text-ink">
-            Property {property.id}
+          <h3 id={titleId} className="flex items-center gap-2 font-display text-xl text-ink">
+            <span aria-hidden className="size-2.5 shrink-0 bg-clay" />
+            Property <span className="font-mono text-[0.85em] font-medium tracking-normal">{property.id}</span>
           </h3>
           <p className="text-[0.8125rem] text-ink-muted">{zipText(property)}</p>
         </div>
@@ -65,7 +65,7 @@ export function NeighborContextCard({ neighbor, onClose, className, focusOnOpen 
           type="button"
           onClick={onClose}
           aria-label="Close connected home details"
-          className="-mt-1 -mr-1 inline-flex size-11 shrink-0 items-center justify-center rounded-full text-ink-muted transition-colors duration-150 hover:bg-sand-soft hover:text-ink"
+          className="-mt-1 -mr-1 inline-flex size-11 shrink-0 items-center justify-center rounded-sm text-ink-muted transition-colors duration-150 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-canvas hover:text-ink"
         >
           <X aria-hidden className="size-4.5" />
         </button>
@@ -91,7 +91,7 @@ export function NeighborContextCard({ neighbor, onClose, className, focusOnOpen 
       </dl>
 
       {property.actual_price_usd != null && (
-        <div className="mt-3 rounded-md bg-sand-soft px-3 py-2">
+        <div className="mt-3 border border-border bg-canvas px-3 py-2">
           <p className="text-[0.8125rem] text-ink-muted">Recorded sale (historical observation, not a model input)</p>
           <p className="tabular text-sm font-semibold text-ink">
             {formatUsd(property.actual_price_usd)}

@@ -73,8 +73,8 @@ describe('ReliefStage fallback', () => {
     const create = document.createElement.bind(document)
     const spy = vi.spyOn(document, 'createElement').mockImplementation((tag: string, options?: ElementCreationOptions) => {
       const element = create(tag, options)
-      if (String(tag).toLowerCase() === 'canvas') {
-        element.getContext = () => null
+      if (element instanceof HTMLCanvasElement) {
+        element.getContext = (() => null) as HTMLCanvasElement['getContext']
       }
       return element
     })

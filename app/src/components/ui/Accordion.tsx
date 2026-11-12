@@ -23,14 +23,14 @@ export function Disclosure({ title, subtitle, children, defaultOpen, className, 
     >
       <RadixAccordion.Item value={value}>
         <RadixAccordion.Header>
-          <RadixAccordion.Trigger className="group flex min-h-12 w-full items-center justify-between gap-3 rounded-lg px-4 py-3 text-left hover:bg-sand-soft/60">
+          <RadixAccordion.Trigger className="group flex min-h-12 w-full items-center justify-between gap-3 rounded-lg px-4 py-3 text-left transition-colors duration-feedback ease-out-expo hover:bg-sand-soft">
             <span className="min-w-0">
               <span className="block font-semibold text-ink">{title}</span>
               {subtitle && <span className="block text-sm text-ink-muted">{subtitle}</span>}
             </span>
             <ChevronDown
               aria-hidden
-              className="size-5 shrink-0 text-ink-muted transition-transform duration-200 group-data-[state=open]:rotate-180"
+              className="size-5 shrink-0 text-ink-muted transition-transform duration-feedback ease-out-expo group-data-[state=open]:rotate-180 motion-reduce:transition-none"
             />
           </RadixAccordion.Trigger>
         </RadixAccordion.Header>

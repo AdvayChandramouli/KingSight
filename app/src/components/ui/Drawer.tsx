@@ -24,14 +24,14 @@ export function Drawer({ open, onOpenChange, title, description, children, side 
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-40 bg-ink/25 data-[state=open]:animate-[ks-fade_180ms_ease-out]" />
+        <Dialog.Overlay className="fixed inset-0 z-40 bg-fir/40 data-[state=open]:animate-[ks-fade_var(--duration-feedback)_var(--ease-out-expo)]" />
         <Dialog.Content
           onCloseAutoFocus={returnFocus}
           className={cn(
-            'fixed z-50 flex flex-col bg-surface shadow-lift outline-none',
+            'fixed z-50 flex flex-col border-border bg-surface shadow-lift',
             side === 'right'
-              ? 'inset-y-0 right-0 w-full max-w-[34rem] data-[state=open]:animate-[ks-slide-in_220ms_var(--ease-out-expo)]'
-              : 'inset-x-0 bottom-0 max-h-[88dvh] rounded-t-xl data-[state=open]:animate-[ks-rise_220ms_var(--ease-out-expo)]',
+              ? 'inset-y-0 right-0 w-full max-w-[34rem] border-l data-[state=open]:animate-[ks-slide-in_var(--duration-drawer)_var(--ease-out-expo)]'
+              : 'inset-x-0 bottom-0 max-h-[88dvh] rounded-t-lg border-t data-[state=open]:animate-[ks-rise_var(--duration-drawer)_var(--ease-out-expo)]',
           )}
         >
           <div className="flex items-start justify-between gap-4 border-b border-border px-6 py-5">
@@ -44,7 +44,7 @@ export function Drawer({ open, onOpenChange, title, description, children, side 
               )}
             </div>
             <Dialog.Close
-              className="-mr-2 inline-flex size-11 shrink-0 items-center justify-center rounded-full text-ink-muted hover:bg-sand-soft hover:text-ink"
+              className="-mr-2 inline-flex size-11 shrink-0 items-center justify-center rounded-md text-ink-muted transition-colors duration-feedback ease-out-expo hover:bg-sand-soft hover:text-ink"
               aria-label="Close"
             >
               <X aria-hidden className="size-5" />

@@ -34,7 +34,7 @@ export function InfoTip({ label, children }: Props) {
         aria-expanded={open}
         aria-controls={id}
         onClick={() => setOpen((o) => !o)}
-        className="-m-2 inline-flex size-9 items-center justify-center rounded-full text-ink-muted hover:text-evergreen"
+        className="-m-1 inline-flex size-11 items-center justify-center rounded-md text-ink-muted transition-colors duration-feedback ease-out-expo hover:text-ink"
       >
         <CircleHelp aria-hidden className="size-4" />
       </button>
@@ -42,7 +42,7 @@ export function InfoTip({ label, children }: Props) {
         <span
           id={id}
           role="note"
-          className="absolute top-full left-1/2 z-30 mt-1 w-64 -translate-x-1/2 rounded-md border border-border bg-surface p-3 text-left text-sm leading-snug font-normal text-ink shadow-lift animate-[ks-reveal_150ms_ease-out]"
+          className="absolute top-full left-1/2 z-30 mt-1 w-64 -translate-x-1/2 rounded-md border border-border bg-surface p-3 text-left text-sm leading-snug font-normal text-ink shadow-lift animate-[ks-reveal_var(--duration-feedback)_var(--ease-out-expo)]"
         >
           {children}
         </span>

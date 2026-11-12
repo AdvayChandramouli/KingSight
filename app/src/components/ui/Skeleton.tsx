@@ -10,7 +10,7 @@ export function Spinner({ className, label }: { className?: string; label?: stri
       <svg
         aria-hidden
         viewBox="0 0 24 24"
-        className={cn('size-4 animate-spin text-evergreen motion-reduce:animate-none', className)}
+        className={cn('size-4 animate-spin text-ink motion-reduce:animate-none', className)}
       >
         <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeOpacity="0.2" strokeWidth="3" />
         <path d="M21 12a9 9 0 0 0-9-9" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />

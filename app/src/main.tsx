@@ -1,5 +1,5 @@
-import '@fontsource-variable/fraunces'
-import '@fontsource-variable/inter'
+import '@fontsource-variable/schibsted-grotesk'
+import '@fontsource-variable/red-hat-mono'
 import './styles/index.css'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'

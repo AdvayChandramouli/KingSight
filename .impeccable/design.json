@@ -1,0 +1,177 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-12T18:50:00.000Z",
+  "title": "Design System: KingSight",
+  "extensions": {
+    "colorMeta": {
+      "ink": {
+        "role": "primary",
+        "displayName": "Ink",
+        "canonical": "#14161a",
+        "tonalRamp": ["#14161a", "#2a2d33", "#454952", "#646974", "#8b9098", "#b4b8be", "#d5d8dc", "#eef0f2"]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "canonical": "#f3f4f6",
+        "tonalRamp": ["#2c3036", "#4a5058", "#6c737c", "#969ca3", "#c4c7cc", "#e6e8eb", "#f3f4f6", "#fafbfc"]
+      },
+      "canvas": {
+        "role": "neutral",
+        "displayName": "Cool paper",
+        "canonical": "#e6e8eb",
+        "tonalRamp": ["#2c3036", "#4a5058", "#6c737c", "#969ca3", "#c4c7cc", "#d5d8dc", "#e6e8eb", "#f7f8f9"]
+      },
+      "fir": {
+        "role": "neutral",
+        "displayName": "Fir",
+        "canonical": "#1a1f24",
+        "tonalRamp": ["#1a1f24", "#2c343b", "#45515b", "#62707b", "#8a96a0", "#b4bcc3", "#d7dce0", "#eef1f3"]
+      },
+      "basswood": {
+        "role": "neutral",
+        "displayName": "Basswood",
+        "canonical": "#d7d1c6",
+        "tonalRamp": ["#5c564c", "#8a8376", "#b1a99a", "#d7d1c6", "#e4ddd2", "#efeae3", "#f6f3ee", "#fbfaf7"]
+      },
+      "deep-blue": {
+        "role": "secondary",
+        "displayName": "Property-feature ink",
+        "canonical": "#1a3d52",
+        "tonalRamp": ["#102430", "#1a3d52", "#2a556c", "#3a4d5c", "#6d8796", "#a3b7c2", "#d5e0e7", "#e7eef2"]
+      },
+      "clay-ink": {
+        "role": "tertiary",
+        "displayName": "Cedar ink",
+        "canonical": "#6a3d28",
+        "tonalRamp": ["#3d2418", "#6a3d28", "#8d5a3a", "#a87456", "#c49a80", "#ddc2b0", "#f3e7de", "#faf6f2"]
+      },
+      "brass": {
+        "role": "primary",
+        "displayName": "Brass",
+        "canonical": "#745218",
+        "tonalRamp": ["#3d2c0c", "#745218", "#8d6824", "#a7843e", "#c4a86a", "#ddc99a", "#efe6d4", "#f7f3ea"]
+      },
+      "danger": {
+        "role": "primary",
+        "displayName": "Danger",
+        "canonical": "#8c2f2c",
+        "tonalRamp": ["#4a1614", "#8c2f2c", "#a84a46", "#c47a76", "#e0b0ac", "#f0d4d1", "#f8e6e3", "#fdf6f5"]
+      },
+      "warning": {
+        "role": "primary",
+        "displayName": "Warning",
+        "canonical": "#6b4a10",
+        "tonalRamp": ["#3d2a08", "#6b4a10", "#8a6420", "#a88448", "#c9b07a", "#e4d4b0", "#f4ead4", "#fbf6ea"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Landing headlines. Same grotesque as the body." },
+      "body": { "displayName": "Body", "purpose": "16px reading text." },
+      "label": { "displayName": "Label", "purpose": "13px controls, folio, and metadata." },
+      "id": { "displayName": "Property id", "purpose": "Red Hat Mono. Property ids only." }
+    },
+    "shadows": [
+      { "name": "contact", "value": "0 1px 2px rgb(20 22 26 / 0.06)", "purpose": "Soft contact under a paper control." },
+      { "name": "sheet", "value": "0 10px 28px -16px rgb(26 31 36 / 0.45)", "purpose": "Drawer and dialog only." }
+    ],
+    "motion": [
+      { "name": "ease-out-expo", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Arrivals." },
+      { "name": "duration-feedback", "value": "160ms", "purpose": "Color, border, and selection." },
+      { "name": "duration-drawer", "value": "250ms", "purpose": "Drawer and sheet." },
+      { "name": "duration-route", "value": "300ms", "purpose": "Route transition." },
+      { "name": "duration-photo", "value": "400ms", "purpose": "Photograph crossfade." },
+      { "name": "duration-connections", "value": "500ms", "purpose": "Connection threads." }
+    ],
+    "breakpoints": [
+      { "name": "folio", "value": "540px" },
+      { "name": "scene", "value": "768px" },
+      { "name": "desk", "value": "75rem" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Ink action on paper.",
+      "html": "<button class=\"ds-btn-primary\">Explore properties</button>",
+      "css": ".ds-btn-primary { background: var(--color-ink, #14161a); color: var(--color-surface, #f3f4f6); border: 0; border-radius: 6px; min-height: 44px; padding: 0 16px; font-family: var(--font-sans, sans-serif); font-size: 13px; font-weight: 500; letter-spacing: 0.01em; transition: background-color 160ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-btn-primary:hover { background: var(--color-evergreen-strong, #2c3138); } .ds-btn-primary:focus-visible { outline: 2px solid var(--color-ink, #14161a); outline-offset: 2px; }"
+    },
+    {
+      "name": "Field Button",
+      "kind": "button",
+      "refersTo": "button-field",
+      "description": "Basswood action used only on fir.",
+      "html": "<div class=\"ds-fir\"><button class=\"ds-btn-field\">Show connections</button></div>",
+      "css": ".ds-fir { background: var(--color-fir, #1a1f24); padding: 16px; } .ds-btn-field { background: var(--color-basswood, #d7d1c6); color: var(--color-fir, #1a1f24); border: 0; border-radius: 6px; min-height: 44px; padding: 0 16px; font-family: var(--font-sans, sans-serif); font-size: 13px; font-weight: 500; } .ds-btn-field:hover { background: var(--color-sand-soft, #efeae3); } .ds-btn-field:focus-visible { outline: 2px solid var(--color-surface, #f3f4f6); outline-offset: 2px; }"
+    },
+    {
+      "name": "Text link",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Header text link beside the one primary action.",
+      "html": "<a class=\"ds-text-link\" href=\"/#how-it-works\">How it works</a>",
+      "css": ".ds-text-link { color: var(--color-ink, #14161a); font-family: var(--font-sans, sans-serif); font-size: 13px; font-weight: 500; letter-spacing: 0.01em; text-decoration: underline; text-decoration-color: var(--color-border, #c4c7cc); text-underline-offset: 0.22em; } .ds-text-link:hover { text-decoration-color: var(--color-ink, #14161a); } .ds-text-link:focus-visible { outline: 2px solid var(--color-ink, #14161a); outline-offset: 2px; }"
+    },
+    {
+      "name": "Header",
+      "kind": "nav",
+      "refersTo": "button-primary",
+      "description": "Compact paper bar: wordmark, folio, text link, one action.",
+      "html": "<header class=\"ds-header\"><div class=\"ds-brand\"><span class=\"ds-mark\"></span><span class=\"ds-word\">KingSight</span></div><p class=\"ds-folio\">King County · May 2014–May 2015</p><a class=\"ds-text-link\" href=\"/#how-it-works\">How it works</a><button class=\"ds-btn-primary\">Explore properties</button></header>",
+      "css": ".ds-header { display: flex; align-items: center; gap: 20px; min-height: 56px; padding: 8px 24px; background: var(--color-surface, #f3f4f6); border-bottom: 1px solid var(--color-border, #c4c7cc); font-family: var(--font-sans, sans-serif); } .ds-brand { display: flex; align-items: center; gap: 10px; } .ds-mark { width: 32px; height: 32px; background: var(--color-ink, #14161a); } .ds-word { font-weight: 600; font-size: 1.35rem; letter-spacing: -0.02em; color: var(--color-ink, #14161a); } .ds-folio { margin: 0; color: var(--color-ink-muted, #3e4450); font-size: 13px; font-weight: 500; letter-spacing: 0.01em; } .ds-text-link { color: var(--color-ink, #14161a); font-size: 13px; font-weight: 500; text-decoration: underline; text-decoration-color: var(--color-border, #c4c7cc); text-underline-offset: 0.22em; } .ds-btn-primary { margin-left: auto; background: var(--color-ink, #14161a); color: var(--color-surface, #f3f4f6); border: 0; border-radius: 6px; min-height: 44px; padding: 0 16px; font-size: 13px; font-weight: 500; } .ds-btn-primary:focus-visible, .ds-text-link:focus-visible { outline: 2px solid var(--color-ink, #14161a); outline-offset: 2px; }"
+    },
+    {
+      "name": "Segmented control",
+      "kind": "chip",
+      "refersTo": "button-secondary",
+      "description": "Selected segment is semibold and carries a brass square.",
+      "html": "<div class=\"ds-seg\" role=\"group\" aria-label=\"View\"><button class=\"ds-seg-on\" type=\"button\"><i></i>Map</button><button class=\"ds-seg-off\" type=\"button\">List</button></div>",
+      "css": ".ds-seg { display: inline-flex; gap: 4px; padding: 4px; border: 1px solid var(--color-border, #c4c7cc); border-radius: 6px; background: var(--color-sand-soft, #efeae3); font-family: var(--font-sans, sans-serif); } .ds-seg button { min-height: 44px; padding: 0 14px; border: 0; border-radius: 4px; background: transparent; color: var(--color-ink-muted, #3e4450); font-size: 16px; } .ds-seg-on { background: var(--color-surface, #f3f4f6); color: var(--color-ink, #14161a); font-weight: 600; display: inline-flex; align-items: center; gap: 8px; } .ds-seg-on i { width: 6px; height: 6px; background: var(--color-brass, #745218); display: block; } .ds-seg button:focus-visible { outline: 2px solid var(--color-ink, #14161a); outline-offset: 2px; }"
+    },
+    {
+      "name": "Notice",
+      "kind": "custom",
+      "refersTo": "button-secondary",
+      "description": "Warning with an icon and a sentence. Color is not the only signal.",
+      "html": "<div class=\"ds-notice\" role=\"status\"><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" aria-hidden=\"true\"><path fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" d=\"M12 9v4M12 17h.01M10.3 4.8 2.8 18a2 2 0 0 0 1.7 3h15a2 2 0 0 0 1.7-3L13.7 4.8a2 2 0 0 0-3.4 0z\"/></svg><p>These estimates describe King County sales from May 2014 to May 2015.</p></div>",
+      "css": ".ds-notice { display: flex; gap: 12px; align-items: flex-start; padding: 12px 16px; border: 1px solid color-mix(in srgb, var(--color-warning, #6b4a10) 30%, transparent); border-radius: 6px; background: var(--color-warning-soft, #f4ead4); color: var(--color-ink, #14161a); font-family: var(--font-sans, sans-serif); font-size: 14px; line-height: 1.5; } .ds-notice svg { flex: none; margin-top: 2px; color: var(--color-warning, #6b4a10); } .ds-notice p { margin: 0; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "A planning model on a studio table",
+    "overview": "KingSight is a historical instrument for King County residential sales from May 2014 through May 2015. The interface is the paper beside a physical relief model: cool gray sheets, basswood land, a darker water inset, and a few metal pins. Daylight is north light. The personality is precise and tactile, without HUD chrome, scanlines, or neon.\n\nThe product’s subject is two readings of the same sale. The property-feature model and the neighborhood-graph model each have an ink. Geography is pins, threads, and captions. Photography and the relief scene prove place. They are not evidence of today’s market, and the copy must not imply current listings, live prices, or present-day predictions.\n\nExplorer and landing consume the tokens in `app/src/styles/index.css`. They must not introduce a one-off hex palette. When a renderer cannot read CSS variables, copy the hex from this file.",
+    "keyCharacteristics": [
+      "Cool paper for type, fir black for the model table",
+      "One grotesque for everything except property ids",
+      "Two model inks, plus brass for the selected pin",
+      "Rectangular controls, hairline borders, 8px radius at most",
+      "Historical scope stays in the folio and in every estimate label"
+    ],
+    "rules": [
+      { "name": "The Two Ink Rule", "body": "Property features are water blue. The graph is cedar. Each reading also carries an icon and its name. Green is not a third model.", "section": "colors" },
+      { "name": "The Square Pin Rule", "body": "An idle geographic mark is a circle (`pin-idle`, ink). The selected mark is a brass square with a 2px paper collar (`pin-selected`). On fir, the idle mark is basswood (`pin-idle-on-fir`) and the collar is basswood (`pin-selected-on-fir`), because brass alone fails contrast on fir. Segmented controls repeat the rule: the selected item is semibold and shows a brass square; the others do not.", "section": "colors" },
+      { "name": "The Paper Action Rule", "body": "On paper, the primary button is ink with paper text. Basswood is the button fill only when the control sits on fir (`variant=\"field\"`).", "section": "colors" },
+      { "name": "The One Family Rule", "body": "Schibsted Grotesk does every job except property ids. Do not use Fraunces, Inter, Space Grotesk, Space Mono, or IBM Plex.", "section": "typography" },
+      { "name": "The Tabular Rule", "body": "Currency and areas use tabular lining figures. Dollar amounts do not count up.", "section": "typography" },
+      { "name": "The Still Duration Rule", "body": "`prefers-reduced-motion` does not set durations to 0.01ms. Opacity, color, and selection changes keep their durations. Transform travel, camera motion, and looping motion (spin, pulse, bounce) drop. The relief scene renders at the settled camera, connections appear without a draw, and the photograph cuts. Scroll smoothing is off.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do take every color from the token table. Copy the hex only when a canvas API cannot see the CSS variable.",
+      "Do keep “King County · May 2014–May 2015”, or the historical-estimates label, visible wherever an estimate is shown.",
+      "Do identify each model with an icon and words as well as its ink.",
+      "Do change a selected mark from a circle to a brass square with a collar.",
+      "Do keep opacity and color motion when reduced motion is on, and drop travel, camera moves, and loops.",
+      "Do set property ids in Red Hat Mono and prices in tabular grotesque figures."
+    ],
+    "donts": [
+      "Don't add a local palette, a brand green, or a neon accent in landing or explorer.",
+      "Don't use Fraunces, Inter, Space Grotesk, Space Mono, or IBM Plex.",
+      "Don't imply current listings, live housing prices, or present-day predictions.",
+      "Don't select, warn, or name a model by color alone.",
+      "Don't set reduced-motion durations to 0.01ms.",
+      "Don't put the relief scene and the explorer MapLibre canvas on screen together."
+    ]
+  }
+}

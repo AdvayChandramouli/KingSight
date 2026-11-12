@@ -1,53 +1,71 @@
 @import 'tailwindcss';
 
 /*
- * KingSight design tokens. Values from SPEC §5, with contrast-checked
- * derivatives: `clay-ink` replaces clay for small text (clay is 4.41:1 on
- * canvas), `ink-muted` is ≥4.5:1 on every surface, `control` is ≥3:1 for
- * input borders.
+ * Relief tokens. Existing names are retuned in place so current utilities
+ * keep working. Evergreen is no longer a brand green — see DESIGN.md.
+ * New names: fir, basswood, brass. Mono is for property ids only.
  */
 @theme {
-  --color-canvas: #f7f4ee;
-  --color-surface: #fffefa;
-  --color-ink: #203a32;
-  --color-ink-muted: #55665f;
-  --color-evergreen: #31594a;
-  --color-evergreen-strong: #26473b;
-  --color-evergreen-soft: #e3ebe4;
-  --color-mist: #dce7eb;
-  --color-mist-soft: #edf3f5;
-  --color-deep-blue: #38596d;
-  --color-clay: #9a654a;
-  --color-clay-ink: #86533a;
-  --color-clay-soft: #f3e6dc;
-  --color-sand: #e9e1d4;
-  --color-sand-soft: #f1ece3;
-  --color-border: #d8d8ce;
-  --color-control: #7f8a82;
-  --color-danger: #9b3b2e;
-  --color-danger-soft: #f7e4df;
-  --color-warning: #7a5212;
-  --color-warning-soft: #f6ecd6;
-  --color-water: #c9dce3;
-  --color-land: #e6ebdd;
+  --color-canvas: #e6e8eb;
+  --color-surface: #f3f4f6;
+  --color-ink: #14161a;
+  --color-ink-muted: #3e4450;
+  --color-evergreen: #14161a;
+  --color-evergreen-strong: #2c3138;
+  --color-evergreen-soft: #d5d8de;
+  --color-mist: #d5e0e7;
+  --color-mist-soft: #e7eef2;
+  --color-deep-blue: #1a3d52;
+  --color-clay: #8d5a3a;
+  --color-clay-ink: #6a3d28;
+  --color-clay-soft: #f3e7de;
+  --color-sand: #e4ddd2;
+  --color-sand-soft: #efeae3;
+  --color-border: #c4c7cc;
+  --color-control: #5a616b;
+  --color-danger: #8c2f2c;
+  --color-danger-soft: #f8e6e3;
+  --color-warning: #6b4a10;
+  --color-warning-soft: #f4ead4;
+  --color-water: #3a4d5c;
+  --color-land: #d7d1c6;
+  --color-fir: #1a1f24;
+  --color-basswood: #d7d1c6;
+  --color-brass: #745218;
 
-  --font-display: 'Fraunces Variable', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
-  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Schibsted Grotesk Variable', 'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Schibsted Grotesk Variable', 'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Red Hat Mono Variable', 'Red Hat Mono', ui-monospace, monospace;
 
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 18px;
+  --text-label: 0.8125rem;
+  --text-label--line-height: 1.35;
+  --text-label--letter-spacing: 0.01em;
+  --text-label--font-weight: 500;
+  --text-caption: 0.8125rem;
+  --text-caption--line-height: 1.4;
+  --text-caption--letter-spacing: 0.02em;
+  --text-caption--font-weight: 400;
 
-  --shadow-soft: 0 1px 2px rgb(32 58 50 / 0.06), 0 4px 14px -6px rgb(32 58 50 / 0.12);
-  --shadow-lift: 0 2px 4px rgb(32 58 50 / 0.06), 0 14px 34px -12px rgb(32 58 50 / 0.22);
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 8px;
+
+  --shadow-soft: 0 1px 2px rgb(20 22 26 / 0.06);
+  --shadow-lift: 0 10px 28px -16px rgb(26 31 36 / 0.45);
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-feedback: 160ms;
+  --duration-drawer: 250ms;
+  --duration-route: 300ms;
+  --duration-photo: 400ms;
+  --duration-connections: 500ms;
   --breakpoint-desk: 75rem;
 }
 
 @layer base {
   html {
+    color-scheme: light;
     background: var(--color-canvas);
     color: var(--color-ink);
     font-family: var(--font-sans);
@@ -55,23 +73,28 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
 
   body {
     min-height: 100dvh;
     font-size: 1rem;
-    line-height: 1.6;
+    line-height: 1.5;
   }
 
   h1,
   h2,
   h3 {
     font-family: var(--font-display);
-    font-optical-sizing: auto;
+    font-weight: 600;
     text-wrap: balance;
-    letter-spacing: -0.015em;
-    line-height: 1.08;
+    letter-spacing: -0.02em;
+    line-height: 1.12;
   }
 
   p {
@@ -79,32 +102,41 @@
   }
 
   ::selection {
-    background: var(--color-mist);
+    background: color-mix(in srgb, var(--color-brass) 28%, var(--color-surface));
     color: var(--color-ink);
   }
 
+  ::placeholder {
+    color: var(--color-ink-muted);
+    opacity: 1;
+  }
+
   :focus-visible {
-    outline: 2px solid var(--color-evergreen);
+    outline: 2px solid var(--color-ink);
     outline-offset: 2px;
-    border-radius: 6px;
+  }
+
+  .on-fir :focus-visible,
+  .on-fir:focus-visible {
+    outline-color: var(--color-surface);
   }
 
   input,
-  textarea {
-    caret-color: var(--color-evergreen);
+  textarea,
+  select {
+    caret-color: var(--color-ink);
   }
 
   a {
-    text-underline-offset: 0.2em;
+    text-underline-offset: 0.22em;
     text-decoration-thickness: 1px;
   }
 
   * {
     scrollbar-width: thin;
-    scrollbar-color: var(--color-border) transparent;
+    scrollbar-color: var(--color-control) transparent;
   }
 
-  /* Hide native number spinners; steppers are explicit controls. */
   input[type='number']::-webkit-inner-spin-button,
   input[type='number']::-webkit-outer-spin-button {
     -webkit-appearance: none;
@@ -121,7 +153,42 @@
 
 @utility font-display-soft {
   font-family: var(--font-display);
-  font-variation-settings: 'SOFT' 50, 'WONK' 0;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.12;
+}
+
+@utility duration-feedback {
+  transition-duration: var(--duration-feedback);
+}
+@utility duration-drawer {
+  transition-duration: var(--duration-drawer);
+}
+@utility duration-route {
+  transition-duration: var(--duration-route);
+}
+@utility duration-photo {
+  transition-duration: var(--duration-photo);
+}
+@utility duration-connections {
+  transition-duration: var(--duration-connections);
+}
+
+/* Idle mark is a circle. Selected mark is a brass square plus a paper collar. */
+@utility pin-idle {
+  border-radius: 999px;
+  background-color: var(--color-ink);
+}
+@utility pin-selected {
+  border-radius: 0;
+  background-color: var(--color-brass);
+  box-shadow: 0 0 0 2px var(--color-surface);
+}
+@utility pin-idle-on-fir {
+  background-color: var(--color-basswood);
+}
+@utility pin-selected-on-fir {
+  box-shadow: 0 0 0 2px var(--color-basswood);
 }
 
 @keyframes ks-fade {
@@ -131,39 +198,65 @@
 }
 @keyframes ks-slide-in {
   from {
-    transform: translateX(2.5rem);
+    transform: translateX(1.25rem);
     opacity: 0;
   }
 }
 @keyframes ks-rise {
   from {
-    transform: translateY(1.5rem);
+    transform: translateY(0.75rem);
     opacity: 0;
   }
 }
 @keyframes ks-reveal {
   from {
-    transform: translateY(0.5rem);
     opacity: 0;
   }
 }
 
+/*
+ * Reduced motion keeps opacity, color, and selection changes at their
+ * authored durations. It drops transform travel and looping motion.
+ * It does not collapse every duration to 0.01ms. Camera motion belongs
+ * to the relief scene and must follow the same rule.
+ */
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
   *,
   *::before,
   *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+    transition-property: opacity, color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, box-shadow !important;
+  }
+
+  .animate-spin,
+  .animate-ping,
+  .animate-pulse,
+  .animate-bounce {
+    animation: none !important;
   }
 }
 
-/* MapLibre controls restyled to the palette. */
+@media (prefers-reduced-motion: reduce) {
+  @keyframes ks-slide-in {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes ks-rise {
+    from {
+      opacity: 0;
+    }
+  }
+}
+
 .maplibregl-ctrl-attrib {
   font-family: var(--font-sans);
   font-size: 11px;
-  background: rgb(255 254 250 / 0.85) !important;
+  background: color-mix(in srgb, var(--color-surface) 92%, transparent) !important;
   color: var(--color-ink-muted);
 }
 .maplibregl-ctrl-attrib a {

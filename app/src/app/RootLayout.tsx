@@ -22,7 +22,7 @@ export function RootLayout() {
     <>
       <a
         href="#main"
-        className="sr-only z-50 rounded-md bg-evergreen px-4 py-2 text-white focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+        className="sr-only z-50 bg-ink px-4 py-2 text-label text-surface focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-surface"
       >
         Skip to content
       </a>

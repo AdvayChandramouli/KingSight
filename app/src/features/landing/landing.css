@@ -13,3 +13,8 @@
   stroke-dasharray: 1;
   animation: ks-draw 1600ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
+
+/* Grade cleared plates toward the model's overcast materials. Files stay ungraded. */
+.ks-plate {
+  filter: grayscale(0.2) saturate(0.74) contrast(1.04) sepia(0.07);
+}

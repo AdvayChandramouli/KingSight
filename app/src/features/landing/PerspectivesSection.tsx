@@ -1,4 +1,3 @@
-import { modelFamilyStyle } from '@/components/modelFamilyStyle'
 import { cn } from '@/components/ui/cn'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { formatUsd } from '@/lib/format'
@@ -26,45 +25,44 @@ export function PerspectivesSection() {
   const graphResult = resultFor(prediction.data, graph?.id ?? null)
 
   return (
-    <section aria-labelledby="perspectives-title" className="mx-auto max-w-[90rem] px-5 py-20 sm:px-8 lg:px-12 lg:py-28">
-      <div className="mb-10 flex flex-col gap-4 lg:mb-12 lg:flex-row lg:items-end lg:justify-between lg:gap-12">
-        <h2 id="perspectives-title" className="text-[2rem] font-medium text-ink sm:text-[2.5rem]">
+    <section aria-labelledby="perspectives-title" className="border-t border-border">
+      <div className="mx-auto max-w-[90rem] px-6 py-16 sm:px-8 lg:px-12 lg:py-24">
+        <h2 id="perspectives-title" className="max-w-[16ch] text-[2rem] font-medium tracking-tight text-ink sm:text-4xl">
           Two perspectives on value
         </h2>
-        <p className="max-w-[34rem] text-ink-muted lg:text-right">
-          KingSight asks two different models the same question: what was this home likely worth in the
-          2014–2015 market?
+        <p className="mt-5 max-w-[36rem] text-ink-muted">
+          KingSight asks two different models the same question: what was this home likely worth in the 2014–2015
+          market?
         </p>
-      </div>
 
-      <div className="grid overflow-hidden rounded-[18px] border border-border md:grid-cols-2">
-        <Perspective
-          family="tabular"
-          label={tabular?.perspective_label}
-          result={tabularResult}
-          loading={loading}
-          failed={failed}
-          previewId={previewId}
-        />
-        <Perspective
-          family="graph"
-          label={graph?.perspective_label}
-          result={graphResult}
-          loading={loading}
-          failed={failed}
-          previewId={previewId}
-          detail={metadata.data?.graph.available ? `Connections: ${metadata.data.graph.rule_label}` : undefined}
-          className="border-t border-border md:border-t-0 md:border-l"
-        />
-      </div>
+        <div className="mt-10 grid border-y border-border md:grid-cols-2">
+          <Perspective
+            family="tabular"
+            label={tabular?.perspective_label}
+            result={tabularResult}
+            loading={loading}
+            failed={failed}
+            previewId={previewId}
+            className="md:border-r md:border-border"
+          />
+          <Perspective
+            family="graph"
+            label={graph?.perspective_label}
+            result={graphResult}
+            loading={loading}
+            failed={failed}
+            previewId={previewId}
+            detail={metadata.data?.graph.available ? `Connections: ${metadata.data.graph.rule_label}` : undefined}
+          />
+        </div>
 
-      <div className="mt-8 grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start lg:gap-12">
-        <p className="max-w-[44rem] text-lg leading-relaxed text-ink">
-          The two estimates can differ, and neither is the right answer by default. Comparing them
-          shows how each model reads the same home.{' '}
-          <Difference tabular={tabularResult} graph={graphResult} />
-        </p>
-        <IllustrativeTag realLabel={`Property ${previewId ?? 'example'}`} className="self-start justify-self-start" />
+        <div className="mt-8 grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start lg:gap-12">
+          <p className="max-w-[44rem] text-lg leading-relaxed text-ink">
+            The two estimates can differ, and neither is the right answer by default. Comparing them shows how each
+            model reads the same home. <Difference tabular={tabularResult} graph={graphResult} />
+          </p>
+          <IllustrativeTag realLabel={`Property ${previewId ?? 'example'}`} className="self-start justify-self-start" />
+        </div>
       </div>
     </section>
   )
@@ -82,28 +80,27 @@ type PerspectiveProps = {
 }
 
 function Perspective({ family, label, result, loading, failed, detail, className, previewId }: PerspectiveProps) {
-  const style = modelFamilyStyle(family)
-  const Icon = style.icon
+  const graph = family === 'graph'
   const ok = result?.status === 'success' && result.predicted_price_usd != null
 
   return (
-    <div className={cn('flex flex-col p-6 sm:p-8 lg:p-10', style.soft, className)}>
-      <span className={cn('inline-flex size-11 items-center justify-center rounded-full bg-surface shadow-soft', style.text)}>
-        <Icon aria-hidden className="size-5" />
-      </span>
-      <h3 className="mt-6 text-2xl font-medium text-ink sm:text-[1.75rem]">{label ?? COPY[family].fallback}</h3>
-      <p className="mt-3 max-w-[30rem] text-ink-muted">{COPY[family].body}</p>
-      {detail && <p className={cn('mt-3 text-sm font-medium', style.text)}>{detail}</p>}
+    <div className={cn('flex flex-col py-8 md:px-8 md:first:pl-0', className)}>
+      <h3 className={cn('inline-flex items-center gap-2.5 text-2xl font-medium', graph ? 'text-clay-ink' : 'text-deep-blue')}>
+        <span aria-hidden className={cn('size-2.5 shrink-0 rounded-full', graph ? 'bg-clay' : 'bg-deep-blue')} />
+        {label ?? COPY[family].fallback}
+      </h3>
+      <p className="mt-3 max-w-[32rem] text-ink-muted">{COPY[family].body}</p>
+      {detail && <p className="mt-3 text-sm font-medium text-clay-ink">{detail}</p>}
 
       <div className="mt-auto pt-8">
-        <div className="border-t border-ink/10 pt-5">
+        <div className="border-t border-border pt-5">
           <p className="text-[0.8125rem] text-ink-muted">Property {previewId ?? '…'}</p>
           {failed ? (
             <p className="mt-1 text-sm text-ink-muted">Example estimate unavailable right now.</p>
           ) : loading || !result ? (
             <Skeleton className="mt-2 h-8 w-36" />
           ) : ok ? (
-            <p className="mt-1 font-display text-[1.875rem] leading-tight font-medium text-ink tabular">
+            <p className={cn('mt-1 text-[1.875rem] leading-tight font-medium tabular', graph ? 'text-clay-ink' : 'text-deep-blue')}>
               {formatUsd(result.predicted_price_usd)}
             </p>
           ) : (
@@ -126,8 +123,7 @@ function Difference({ tabular, graph }: { tabular: ModelResult | undefined; grap
   return (
     <span className="text-ink-muted">
       For this example, the neighborhood-graph estimate is{' '}
-      <span className="font-medium text-ink tabular">{formatUsd(Math.abs(diff))}</span>{' '}
-      {diff > 0 ? 'higher' : 'lower'}.
+      <span className="font-medium text-ink tabular">{formatUsd(Math.abs(diff))}</span> {diff > 0 ? 'higher' : 'lower'}.
     </span>
   )
 }

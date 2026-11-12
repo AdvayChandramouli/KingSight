@@ -5,7 +5,6 @@ import { ContextSection } from '@/features/landing/ContextSection'
 import { ContributionsSection } from '@/features/landing/ContributionsSection'
 import { Hero } from '@/features/landing/Hero'
 import { PerspectivesSection } from '@/features/landing/PerspectivesSection'
-import { ProductPreview } from '@/features/landing/ProductPreview'
 import '@/features/landing/landing.css'
 
 export function LandingPage() {
@@ -14,11 +13,10 @@ export function LandingPage() {
   }, [])
 
   return (
-    <div className="min-h-dvh overflow-x-clip bg-canvas">
+    <div className="min-h-dvh overflow-x-clip bg-canvas text-ink">
       <SiteHeader variant="landing" />
       <main id="main">
         <Hero />
-        <ProductPreview />
         <ContextSection />
         <PerspectivesSection />
         <ContributionsSection />

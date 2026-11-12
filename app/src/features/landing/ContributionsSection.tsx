@@ -3,7 +3,7 @@ import { cn } from '@/components/ui/cn'
 import { Notice } from '@/components/ui/Notice'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { formatSignedLog, formatSignedUsd, formatSqft, formatUsd } from '@/lib/format'
-import type { Explanation, ExplanationFeature } from '@/services/types'
+import type { Explanation, ExplanationFeature, ModelFamily } from '@/services/types'
 import { IllustrativeTag } from './IllustrativeTag'
 import { usePreviewExplanation } from './usePreviewEstimate'
 
@@ -11,10 +11,10 @@ const MAX_ROWS = 5
 
 export function ContributionsSection() {
   return (
-    <section aria-labelledby="contributions-title" className="border-y border-border bg-sand-soft/70">
-      <div className="mx-auto grid max-w-[90rem] gap-12 px-5 py-20 sm:px-8 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-20 lg:px-12 lg:py-28">
-        <div className="lg:pt-2">
-          <h2 id="contributions-title" className="max-w-[14ch] text-[2rem] font-medium text-ink sm:text-[2.5rem]">
+    <section aria-labelledby="contributions-title" className="border-t border-border">
+      <div className="mx-auto grid max-w-[90rem] gap-12 px-6 py-16 sm:px-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-20 lg:px-12 lg:py-24">
+        <div>
+          <h2 id="contributions-title" className="max-w-[14ch] text-[2rem] font-medium tracking-tight text-ink sm:text-4xl">
             See what shaped the estimate
           </h2>
           <p className="mt-5 max-w-[34rem] text-lg leading-relaxed text-ink">
@@ -63,11 +63,11 @@ function ContributionPanel() {
   } else if (data.features.length === 0) {
     body = <p className="text-sm text-ink-muted">Feature explanation unavailable for this estimate.</p>
   } else {
-    body = <ContributionBars explanation={data} />
+    body = <ContributionBars explanation={data} family={model?.family} />
   }
 
   return (
-    <div className="rounded-[18px] border border-border bg-surface p-5 shadow-soft sm:p-7">
+    <div className="rounded-sm border border-border bg-canvas px-5 py-5 sm:px-6">
       <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border pb-4">
         <div>
           <h3 className="text-xl font-medium text-ink">Property {previewId ?? '…'}</h3>
@@ -82,7 +82,7 @@ function ContributionPanel() {
   )
 }
 
-function ContributionBars({ explanation }: { explanation: Explanation }) {
+function ContributionBars({ explanation, family }: { explanation: Explanation; family?: ModelFamily }) {
   const isUsd = explanation.output_space === 'usd'
   const rows = [...explanation.features]
     .sort((a, b) => Math.abs(b.contribution) - Math.abs(a.contribution))
@@ -102,7 +102,13 @@ function ContributionBars({ explanation }: { explanation: Explanation }) {
       )}
       <ul className="divide-y divide-border">
         {rows.map((f) => (
-          <ContributionRow key={f.key} feature={f} share={Math.abs(f.contribution) / max} isUsd={isUsd} />
+          <ContributionRow
+            key={f.key}
+            feature={f}
+            share={Math.abs(f.contribution) / max}
+            isUsd={isUsd}
+            tone={family === 'graph' ? 'bg-clay' : 'bg-deep-blue'}
+          />
         ))}
       </ul>
       <p className="mt-3 border-t border-border pt-4 text-[0.8125rem] text-ink-muted">
@@ -114,31 +120,38 @@ function ContributionBars({ explanation }: { explanation: Explanation }) {
   )
 }
 
-function ContributionRow({ feature, share, isUsd }: { feature: ExplanationFeature; share: number; isUsd: boolean }) {
+function ContributionRow({
+  feature,
+  share,
+  isUsd,
+  tone,
+}: {
+  feature: ExplanationFeature
+  share: number
+  isUsd: boolean
+  tone: string
+}) {
   const c = feature.contribution
   const direction = c > 0 ? 'raised' : c < 0 ? 'lowered' : 'no effect'
   const amount = isUsd ? formatSignedUsd(c) : formatSignedLog(c)
   const width = `${Math.max(share * 50, c === 0 ? 0 : 1.5)}%`
 
   return (
-    <li className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-2 py-3.5 sm:grid-cols-[minmax(8rem,11rem)_minmax(0,1fr)_7rem]">
+    <li className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-1.5 py-2.5 sm:grid-cols-[minmax(8rem,11rem)_minmax(0,1fr)_7rem]">
       <div className="min-w-0">
         <p className="truncate text-sm font-medium text-ink">{feature.label}</p>
         <p className="truncate text-[0.8125rem] text-ink-muted tabular">{formatFeatureValue(feature)}</p>
       </div>
-      <div className="relative col-span-2 h-6 sm:col-span-1 sm:row-start-1 sm:col-start-2" aria-hidden>
-        <span className="absolute inset-y-0 left-1/2 w-px bg-control/50" />
+      <div className="relative col-span-2 h-5 sm:col-span-1 sm:row-start-1 sm:col-start-2" aria-hidden>
+        <span className="absolute inset-y-0 left-1/2 w-px bg-border" />
         <span
-          className={cn(
-            'absolute top-1/2 h-3.5 -translate-y-1/2 rounded-full',
-            c >= 0 ? 'left-1/2 bg-evergreen' : 'right-1/2 bg-clay',
-          )}
+          className={cn('absolute top-1/2 h-2 -translate-y-1/2 rounded-sm', c >= 0 ? 'left-1/2' : 'right-1/2', tone)}
           style={{ width }}
         />
       </div>
-      <p className="row-start-1 col-start-2 text-right sm:col-start-3">
+      <p className="col-start-2 row-start-1 text-right sm:col-start-3">
         <span className="block text-sm font-semibold text-ink tabular">{amount}</span>
-        <span className={cn('block text-[0.8125rem]', c >= 0 ? 'text-evergreen' : 'text-clay-ink')}>{direction}</span>
+        <span className="block text-[0.8125rem] text-ink">{direction}</span>
       </p>
     </li>
   )

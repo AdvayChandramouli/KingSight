@@ -261,8 +261,8 @@ function SalePin({ propertyId, zip, latitude, longitude }: Pick<ModelProps, 'pro
   const point = projectToModel(latitude, longitude)
   return (
     <group name={`sale-${propertyId}-${zip}`} position={[point.x, LAND_TOP, point.z]}>
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.0015, 0]} castShadow>
-        <circleGeometry args={[0.016, 20]} />
+      <mesh position={[0, 0.0015, 0]} castShadow>
+        <boxGeometry args={[0.032, 0.003, 0.032]} />
         <meshStandardMaterial color={BRASS} metalness={0.72} roughness={0.34} />
       </mesh>
       <mesh position={[0, 0.034, 0]} castShadow>
@@ -270,7 +270,7 @@ function SalePin({ propertyId, zip, latitude, longitude }: Pick<ModelProps, 'pro
         <meshStandardMaterial color={BRASS} metalness={0.72} roughness={0.34} />
       </mesh>
       <mesh position={[0, 0.074, 0]} castShadow>
-        <sphereGeometry args={[0.011, 16, 12]} />
+        <boxGeometry args={[0.02, 0.016, 0.02]} />
         <meshStandardMaterial color={BRASS} metalness={0.72} roughness={0.34} />
       </mesh>
     </group>
@@ -366,7 +366,7 @@ function NeighborLink({
       </mesh>
       <group ref={pin} visible={false}>
         <mesh
-          position={[0, 0.014, 0]}
+          position={[0, 0.008, 0]}
           castShadow
           onPointerOver={hover}
           onPointerMove={hover}
@@ -374,7 +374,7 @@ function NeighborLink({
           onPointerDown={hold}
           onClick={hold}
         >
-          <coneGeometry args={[0.011, 0.028, 4]} />
+          <sphereGeometry args={[0.008, 14, 10]} />
           <meshStandardMaterial color={NAIL} metalness={0.22} roughness={0.58} flatShading />
         </mesh>
       </group>

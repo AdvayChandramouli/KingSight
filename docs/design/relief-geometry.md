@@ -16,7 +16,7 @@ Local tangent frame, not a published CRS.
 - One model unit = `100000` meters (100 km).
 - `x` = easting / 100000.
 - `z` = −northing / 100000, so north is −Z and Y is up.
-- Property and neighbor pins use this projection of the latitude and longitude props. Their Y is the flat basswood board (`LAND_TOP` in `project.ts`), not a DEM elevation.
+- Property and neighbor pins use this projection of the latitude and longitude props. Their Y is the flat basswood board (`LAND_TOP` in `project.ts`), not a DEM elevation. The selected sale is a brass square head on a stem; each neighbor is a smaller round head in the nail material.
 
 The initial camera is a high oblique from the southwest (`CAMERA_FRAME` in `project.ts`): polar angle stopped above the horizon, distance stopped before a landmark can fill the frame. There is no autorotate.
 

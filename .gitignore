@@ -18,5 +18,9 @@ __pycache__/
 *.py[cod]
 
 # Markdown is local agent context. Only the repository README is versioned.
+# Relief deliverables are the exception: the design system, the photo ledger, and the geometry note.
 *.md
 !/README.md
+!/DESIGN.md
+!/docs/design/photography-ledger.md
+!/docs/design/relief-geometry.md
